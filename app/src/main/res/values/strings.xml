@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mobile Compass</string>
+    <string name="label_default_headline">Northeast by east</string>
+    <string name="label_empty" />
+</resources>
