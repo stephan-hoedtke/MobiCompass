@@ -48,10 +48,6 @@ public class RotaryView extends AppCompatImageView {
         });
     }
 
-    public void setAngle(float angle) {
-        setRotation(angle);
-    }
-
     public void addAngle(double delta) {
         float angle = getRotation(); // don't use the ImageView.setRotation() but use our own angle...
         angle += delta;

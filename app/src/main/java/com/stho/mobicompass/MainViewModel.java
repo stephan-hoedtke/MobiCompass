@@ -27,7 +27,7 @@ public class MainViewModel extends AndroidViewModel {
     private Acceleration acceleration;
     private LowPassFilter lowPassFilter;
 
-    LiveData<Float> getNorthPointerAngleLD() { return Transformations.map(northPointerPositionLiveData, alpha -> (float)Points.toDegree(alpha)); }
+    LiveData<Float> getNorthPointerAngleLD() { return Transformations.map(northPointerPositionLiveData, angle -> (float)Angle.toDegree(angle)); }
     LiveData<String> getDirectionLD() { return Transformations.map(northPointerPositionLiveData, Points::getName); }
     LiveData<Float> getRingAngleLD() { return ringAngleLiveData; }
 
@@ -49,7 +49,8 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     void seek() {
-        ringAngleLiveData.postValue((float)Angle.toDegree(acceleration.getPosition()));
+        float degree = (float)Angle.toDegree(acceleration.getPosition());
+        ringAngleLiveData.postValue(-degree);
     }
 
     void updateNorthPointer() {
