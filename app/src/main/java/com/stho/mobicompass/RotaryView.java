@@ -18,13 +18,8 @@ public class RotaryView extends AppCompatImageView {
         void onDoubleTap();
     }
 
-    public interface OnLongPressListener {
-        void onLongPress();
-    }
-
     private OnRotateListener rotateListener;
     private OnDoubleTapListener doubleTapListener;
-    private OnLongPressListener longPressListener;
     private boolean simpleRotaryDragMode;
     private double previousAngle = 0;
     private GestureDetector gestureDetector;
@@ -50,12 +45,6 @@ public class RotaryView extends AppCompatImageView {
                 RotaryView.this.onDoubleTap();
                 return super.onDoubleTap(e);
             }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-                RotaryView.this.onLongPress();
-                super.onLongPress(e);
-            }
         });
     }
 
@@ -80,11 +69,6 @@ public class RotaryView extends AppCompatImageView {
             doubleTapListener.onDoubleTap();
     }
 
-    private void onLongPress() {
-        if (longPressListener != null)
-            longPressListener.onLongPress();
-    }
-
     public boolean getSimpleRotaryDragMode() {
         return this.simpleRotaryDragMode;
     }
@@ -99,10 +83,6 @@ public class RotaryView extends AppCompatImageView {
 
     public void setOnDoubleTapListener(OnDoubleTapListener listener) {
         this.doubleTapListener = listener;
-    }
-
-    public void setOnLongPressListener(OnLongPressListener listener) {
-        this.longPressListener = listener;
     }
 
     @SuppressLint("ClickableViewAccessibility")

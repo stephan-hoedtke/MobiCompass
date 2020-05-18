@@ -56,7 +56,7 @@ public class MainFragment extends Fragment implements SensorEventListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
         binding.compassRing.setOnAngleChangedListener(delta -> viewModel.rotate(delta));
         binding.compassRing.setOnDoubleTapListener(() -> viewModel.reset());
-        binding.compassRing.setOnLongPressListener(() -> viewModel.seek());
+        binding.headline.setOnClickListener(view -> viewModel.seek());
         viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), angle -> {
             binding.compassRing.setAngle(angle);
         });
