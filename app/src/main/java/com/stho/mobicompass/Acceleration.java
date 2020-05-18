@@ -26,7 +26,7 @@ class Acceleration {
     private static final double NANOSECONDS_PER_SECOND = 1000000000;
 
     Acceleration() {
-        factor = 1.0 / NANOSECONDS_PER_SECOND;
+        factor = 1.1 / NANOSECONDS_PER_SECOND;
         v0 = 0;
         s0 = 0;
         s1 = 0;

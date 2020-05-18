@@ -1,11 +1,10 @@
-package com.stho.mayai;
+package com.stho.mobicompass;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -19,23 +18,29 @@ public class RotaryView extends AppCompatImageView {
         void onDoubleTap();
     }
 
+    public interface OnLongPressListener {
+        void onLongPress();
+    }
+
     private OnRotateListener rotateListener;
     private OnDoubleTapListener doubleTapListener;
-    private boolean simpleRotary;
+    private OnLongPressListener longPressListener;
+    private boolean simpleRotaryDragMode;
     private double previousAngle = 0;
-    private long lastTapDown = 0;
     private GestureDetector gestureDetector;
 
     public RotaryView(Context context) {
         super(context);
-        simpleRotary = false;
+        simpleRotaryDragMode = false;
         setupGestureDetector();
+        setImageResource(R.drawable.magnetic_compass_ring);
     }
 
     public RotaryView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        simpleRotary = false;
+        simpleRotaryDragMode = false;
         setupGestureDetector();
+        setImageResource(R.drawable.magnetic_compass_ring);
     }
 
     private void setupGestureDetector() {
@@ -45,11 +50,21 @@ public class RotaryView extends AppCompatImageView {
                 RotaryView.this.onDoubleTap();
                 return super.onDoubleTap(e);
             }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                RotaryView.this.onLongPress();
+                super.onLongPress(e);
+            }
         });
     }
 
+    public void setAngle(float angle) {
+        setRotation(angle);
+    }
+
     public void addAngle(double delta) {
-        float angle = getRotation();
+        float angle = getRotation(); // don't use the ImageView.setRotation() but use our own angle...
         angle += delta;
         setRotation(angle);
         onRotate(delta);
@@ -65,16 +80,17 @@ public class RotaryView extends AppCompatImageView {
             doubleTapListener.onDoubleTap();
     }
 
-    public void setAngle(float angle) {
-        this.setRotation(angle);
+    private void onLongPress() {
+        if (longPressListener != null)
+            longPressListener.onLongPress();
     }
 
-    public boolean getSimpleRotary() {
-        return this.simpleRotary;
+    public boolean getSimpleRotaryDragMode() {
+        return this.simpleRotaryDragMode;
     }
 
-    public void setSimpleRotary(boolean value) {
-        this.simpleRotary = value;
+    public void setSimpleRotaryDragMode(boolean value) {
+        this.simpleRotaryDragMode = value;
     }
 
     public void setOnAngleChangedListener(OnRotateListener listener) {
@@ -85,11 +101,15 @@ public class RotaryView extends AppCompatImageView {
         this.doubleTapListener = listener;
     }
 
+    public void setOnLongPressListener(OnLongPressListener listener) {
+        this.longPressListener = listener;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         gestureDetector.onTouchEvent(event);
-        if (simpleRotary) {
+        if (simpleRotaryDragMode) {
             return onTouchEventSimpleMode(event);
         }
         else {

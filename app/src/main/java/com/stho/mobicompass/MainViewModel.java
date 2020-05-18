@@ -48,6 +48,10 @@ public class MainViewModel extends AndroidViewModel {
         ringAngleLiveData.postValue(0f);
     }
 
+    void seek() {
+        ringAngleLiveData.postValue((float)acceleration.getPosition());
+    }
+
     void updateNorthPointer() {
         northPointerPositionLiveData.postValue(acceleration.getPosition());
     }

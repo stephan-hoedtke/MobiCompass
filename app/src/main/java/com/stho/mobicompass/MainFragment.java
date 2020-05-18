@@ -7,9 +7,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,13 +26,16 @@ import com.stho.mobicompass.databinding.MainFragmentBinding;
 public class MainFragment extends Fragment implements SensorEventListener {
 
     private SensorManager sensorManager;
+    private WindowManager windowManager;
     private final float[] accelerometerReading = new float[3];
     private final float[] magnetometerReading = new float[3];
     private final float[] rotationMatrix = new float[9];
+    private final float[] rotationMatrixAdjusted = new float[9];
     private final float[] orientationAngles = new float[3];
     private final Handler handler = new Handler();
     private MainViewModel viewModel;
     private MainFragmentBinding binding;
+    private Display display;
 
     public static MainFragment build() {
         return new MainFragment();
@@ -41,6 +47,7 @@ public class MainFragment extends Fragment implements SensorEventListener {
         super.onCreate(savedInstanceState);
         viewModel = MainViewModel.build(this);
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
     }
 
     @Nullable
@@ -49,7 +56,10 @@ public class MainFragment extends Fragment implements SensorEventListener {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
         binding.compassRing.setOnAngleChangedListener(delta -> viewModel.rotate(delta));
         binding.compassRing.setOnDoubleTapListener(() -> viewModel.reset());
-        viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), angle -> binding.compassRing.setRotation(angle));
+        binding.compassRing.setOnLongPressListener(() -> viewModel.seek());
+        viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), angle -> {
+            binding.compassRing.setAngle(angle);
+        });
         viewModel.getNorthPointerAngleLD().observe(getViewLifecycleOwner(), angle -> {
             binding.compassNorthPointer.setRotation(-angle);
             binding.headline.setText(Formatter.toString0(angle));
@@ -61,6 +71,7 @@ public class MainFragment extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
+        display = windowManager.getDefaultDisplay();
         initializeAccelerationSensor();
         initializeMagneticFieldSensor();
         initializeHandler();
@@ -135,9 +146,35 @@ public class MainFragment extends Fragment implements SensorEventListener {
     // Compute the three orientation angles based on the most recent readings from
     // the device's accelerometer and magnetometer.
     private void updateOrientationAngles() {
-        SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading);
-        SensorManager.getOrientation(rotationMatrix, orientationAngles);
-        viewModel.update(orientationAngles);
+        if (SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading)) {
+            SensorManager.getOrientation(getAdjustedRotationMatrix(), orientationAngles);
+            viewModel.update(orientationAngles);
+        }
+    }
+
+    /*
+      See the following training materials from google.
+      https://codelabs.developers.google.com/codelabs/advanced-android-training-sensor-orientation/index.html?index=..%2F..advanced-android-training#0
+     */
+    @SuppressWarnings("SuspiciousNameCombination")
+    private float[] getAdjustedRotationMatrix() {
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0:
+                return rotationMatrix;
+
+            case Surface.ROTATION_90:
+                SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, rotationMatrixAdjusted);
+                return rotationMatrixAdjusted;
+
+            case Surface.ROTATION_180:
+                SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y, rotationMatrixAdjusted);
+                return rotationMatrixAdjusted;
+
+            case Surface.ROTATION_270:
+                SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X, rotationMatrixAdjusted);
+                return rotationMatrixAdjusted;
+         }
+         return rotationMatrix;
     }
 }
 

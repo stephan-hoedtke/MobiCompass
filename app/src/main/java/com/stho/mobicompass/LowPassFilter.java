@@ -18,7 +18,7 @@ class LowPassFilter {
         return gravity;
     }
 
-    private static final float TIME_CONSTANT = 0.3f;
+    private static final float TIME_CONSTANT = 0.2f;
 
     private void lowPassFilter(float[] acceleration, float dt) {
         if (dt > 0) {
