@@ -27,8 +27,8 @@ public class MainViewModel extends AndroidViewModel {
     private Acceleration acceleration;
     private LowPassFilter lowPassFilter;
 
-    LiveData<Float> getNorthPointerAngleLD() { return Transformations.map(northPointerPositionLiveData, angle -> (float)Angle.toDegree(angle)); }
-    LiveData<String> getDirectionLD() { return Transformations.map(northPointerPositionLiveData, Points::getName); }
+    LiveData<Float> getNorthPointerPositionLD() { return Transformations.map(northPointerPositionLiveData, angle -> (float)Angle.toDegree(angle)); }
+    LiveData<String> getDirectionNameLD() { return Transformations.map(northPointerPositionLiveData, Direction::getName); }
     LiveData<Float> getRingAngleLD() { return ringAngleLiveData; }
 
     private void initialize() {
@@ -62,18 +62,15 @@ public class MainViewModel extends AndroidViewModel {
         update(gravity.x, Angle.normalizePlusMinus(gravity.z));
     }
 
-    private static final double PI90 = 0.5 * Math.PI;
+    private static final double PI_90 = 0.5 * Math.PI;
 
     private void update(double azimuth, double roll) {
-        if (roll < -PI90 || roll > PI90) {
+        if (roll < -PI_90 || roll > PI_90) {
             azimuth = Angle.normalize(0 - azimuth); // look at screen from below
         }
         updateAcceleration(azimuth);
     }
 
-    /*
-        Determine, if we need to rotate clockwise or anti-clockwise
-     */
     private void updateAcceleration(double newAngle) {
         double angle = acceleration.getPosition();
         acceleration.update(Angle.rotateTo(angle, newAngle));

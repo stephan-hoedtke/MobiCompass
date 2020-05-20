@@ -3,7 +3,9 @@ package com.stho.mobicompass;
 /**
  * Created by shoedtke on 11.10.2016.
  */
-public final class Degree {
+@SuppressWarnings("WeakerAccess")
+public class Degree {
+
     public static float normalize(float x) {
         x = x % 360;
         while (x > 360)

@@ -1,5 +1,6 @@
 package com.stho.mobicompass;
 
+@SuppressWarnings("WeakerAccess")
 public class Angle {
 
     private final static double PI = Math.PI;
@@ -32,7 +33,7 @@ public class Angle {
         return from + difference;
     }
 
-    public static double toDegree(double x) {
-        return x * 180 / Math.PI;
+    public static float toDegree(double x) {
+        return (float)(x * 180 / Math.PI);
     }
 }

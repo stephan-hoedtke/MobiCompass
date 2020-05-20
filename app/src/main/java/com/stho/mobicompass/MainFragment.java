@@ -13,9 +13,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,15 +54,15 @@ public class MainFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
-        binding.compassRing.setOnAngleChangedListener(delta -> viewModel.rotate(delta));
+        binding.compassRing.setOnRotateListener(delta -> viewModel.rotate(delta));
         binding.compassRing.setOnDoubleTapListener(() -> viewModel.reset());
         binding.headline.setOnClickListener(view -> viewModel.seek());
         viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), alpha -> binding.compassRing.setRotation(alpha));
-        viewModel.getNorthPointerAngleLD().observe(getViewLifecycleOwner(), angle -> {
+        viewModel.getNorthPointerPositionLD().observe(getViewLifecycleOwner(), angle -> {
             binding.compassNorthPointer.setRotation(-angle);
             binding.headline.setText(Formatter.toString0(angle));
         });
-        viewModel.getDirectionLD().observe(getViewLifecycleOwner(), direction -> binding.headline.setText(direction));
+        viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), direction -> binding.headline.setText(direction));
         return binding.getRoot();
     }
 

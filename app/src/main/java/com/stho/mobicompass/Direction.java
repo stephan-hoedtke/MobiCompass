@@ -1,13 +1,9 @@
 package com.stho.mobicompass;
 
-class Points {
-
-    static double toDegree(double angle) {
-        return angle * 180 / Math.PI;
-    }
+class Direction {
 
     static String getName(double angle) {
-        double degree = toDegree(angle);
+        double degree = Angle.toDegree(angle);
         while (degree < 0) {
             degree += 360;
         }

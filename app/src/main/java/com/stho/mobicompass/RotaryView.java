@@ -48,8 +48,8 @@ public class RotaryView extends AppCompatImageView {
         });
     }
 
-    public void addAngle(double delta) {
-        float angle = getRotation(); // don't use the ImageView.setRotation() but use our own angle...
+    public void rotate(double delta) {
+        float angle = getRotation();
         angle += delta;
         setRotation(angle);
         onRotate(delta);
@@ -73,7 +73,7 @@ public class RotaryView extends AppCompatImageView {
         this.simpleRotaryDragMode = value;
     }
 
-    public void setOnAngleChangedListener(OnRotateListener listener) {
+    public void setOnRotateListener(OnRotateListener listener) {
         this.rotateListener = listener;
     }
 
@@ -97,7 +97,7 @@ public class RotaryView extends AppCompatImageView {
         // The rotation follows the finger position directly. Wherever you tap the pointer will point to.
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             final double delta = ensureAngleRange(getAngle(event.getX(), event.getY()));
-            addAngle(delta);
+            rotate(delta);
         }
         return true;
     }
@@ -114,7 +114,7 @@ public class RotaryView extends AppCompatImageView {
                 final double alpha = getRotation() + getAngle(event.getX(), event.getY());
                 final double delta = ensureAngleRange(alpha - previousAngle);
                 previousAngle = alpha;
-                addAngle(delta);
+                rotate(delta);
                 break;
         }
         return true;
