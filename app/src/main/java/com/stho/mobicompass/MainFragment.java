@@ -136,11 +136,6 @@ public class MainFragment extends Fragment implements SensorEventListener {
         // ignore
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private NavController findNavController() {
-        return Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-    }
-
     // Compute the three orientation angles based on the most recent readings from
     // the device's accelerometer and magnetometer.
     private void updateOrientationAngles() {

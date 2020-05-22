@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
                 .Builder(R.id.main_navigation)
                 .build();
         NavController navController = findNavController();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
     }
 
