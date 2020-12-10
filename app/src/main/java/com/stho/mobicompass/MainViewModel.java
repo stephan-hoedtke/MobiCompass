@@ -17,7 +17,6 @@ public class MainViewModel extends AndroidViewModel {
         initialize();
     }
 
-    @SuppressWarnings("ConstantConditions")
     static MainViewModel build(@NonNull Fragment fragment) {
         return new ViewModelProvider(fragment.getActivity()).get(MainViewModel.class);
     }
@@ -38,7 +37,6 @@ public class MainViewModel extends AndroidViewModel {
         ringAngleLiveData.postValue(0.0f);
     }
 
-    @SuppressWarnings("ConstantConditions")
     void rotate(double delta) {
         double angle = Degree.normalize(ringAngleLiveData.getValue() + delta);
         ringAngleLiveData.postValue((float)angle);
@@ -59,7 +57,7 @@ public class MainViewModel extends AndroidViewModel {
 
     void update(float[] orientationAngles) {
         Vector gravity = lowPassFilter.setAcceleration(orientationAngles);
-        update(gravity.x, Angle.normalizePlusMinus(gravity.z));
+        update(gravity.x, Angle.normalizePlusMinusPI(gravity.z));
     }
 
     private static final double PI_90 = 0.5 * Math.PI;
@@ -72,7 +70,6 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void updateAcceleration(double newAngle) {
-        double angle = acceleration.getPosition();
-        acceleration.update(Angle.rotateTo(angle, newAngle));
+        acceleration.rotateTo(newAngle);
     }
 }

@@ -15,7 +15,7 @@ public class Angle {
         return x;
     }
 
-    public static double normalizePlusMinus(double x) {
+    public static double normalizePlusMinusPI(double x) {
         x = x % TWO_PI;
         while (x > PI)
             x -= TWO_PI;
@@ -24,13 +24,8 @@ public class Angle {
         return x;
     }
 
-    public static double getAngleDifference(double from, double to) {
-        return normalizePlusMinus(to - from);
-    }
-
-    public static double rotateTo(double from, double to) {
-        final double difference = getAngleDifference(from, to);
-        return from + difference;
+    public static double getAngleDifferenceFromToRadiant(double from, double to) {
+        return normalizePlusMinusPI(to - from);
     }
 
     public static float toDegree(double x) {

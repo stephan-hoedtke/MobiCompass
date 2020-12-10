@@ -21,7 +21,7 @@ class Acceleration {
     private double c;
     private double d;
     private long t0;
-    private double factor;
+    private final double factor;
 
     private static final double NANOSECONDS_PER_SECOND = 1000000000;
 
@@ -51,6 +51,31 @@ class Acceleration {
         calculateFormula();
     }
 
+    /*
+        for angles in Radiant (0 < angle < 2 PI)
+     */
+    void rotateTo(double targetAngle) {
+        long elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos();
+        double t = getTime(elapsedRealtimeNanos);
+        double v = getSpeed(t);
+        double s = getPosition(t);
+        double angle = Angle.getAngleDifferenceFromToRadiant(s, targetAngle);
+        v0 = v;
+        s0 = s;
+        s1 = s + angle;
+        t0 = elapsedRealtimeNanos;
+        if (angle > 0 && s1 > TWO_PI) {
+            s0 -= TWO_PI;
+            s1 -= TWO_PI;
+        }
+        else if (angle < 0 && s1 < 0) {
+            s0 += TWO_PI;
+            s1 += TWO_PI;
+        }
+        calculateFormula();
+    }
+
+
     private double getTime(long elapsedRealtimeNanos) {
         long nanos = elapsedRealtimeNanos - t0;
         return factor * nanos;
@@ -74,4 +99,6 @@ class Acceleration {
         if (t > 1) return 0;
         return (3 * a * t + 2 * b) * t + c;
     }
+
+    private static final double TWO_PI = 2 * Math.PI;
 }
