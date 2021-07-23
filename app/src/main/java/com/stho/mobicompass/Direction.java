@@ -2,13 +2,12 @@ package com.stho.mobicompass;
 
 class Direction {
 
-    static String getName(double angle) {
-        double degree = Angle.toDegree(angle);
-        while (degree < 0) {
-            degree += 360;
+    static String getName(float degree) {
+         while (degree < 0f) {
+            degree += 360f;
         }
-        degree += 5.625;
-        int points = (int) (degree / 11.25);
+        degree += 5.625f;
+        int points = (int) (degree / 11.25f);
         return getNameForPoints(points);
     }
 

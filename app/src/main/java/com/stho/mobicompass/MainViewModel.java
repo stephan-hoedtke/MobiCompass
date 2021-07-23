@@ -14,32 +14,24 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        initialize();
+        northPointerPositionLiveData.setValue(0f);
+        ringAngleLiveData.setValue(0f);
     }
 
     static MainViewModel build(@NonNull Fragment fragment) {
-        return new ViewModelProvider(fragment.getActivity()).get(MainViewModel.class);
+        return new ViewModelProvider(fragment.requireActivity()).get(MainViewModel.class);
     }
 
-    private final MutableLiveData<Double> northPointerPositionLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Float> northPointerPositionLiveData = new MutableLiveData<>();
     private final MutableLiveData<Float> ringAngleLiveData = new MutableLiveData<>();
-    private Acceleration acceleration;
-    private LowPassFilter lowPassFilter;
 
-    LiveData<Float> getNorthPointerPositionLD() { return Transformations.map(northPointerPositionLiveData, angle -> (float)Angle.toDegree(angle)); }
+    LiveData<Float> getNorthPointerPositionLD() { return northPointerPositionLiveData; }
     LiveData<String> getDirectionNameLD() { return Transformations.map(northPointerPositionLiveData, Direction::getName); }
     LiveData<Float> getRingAngleLD() { return ringAngleLiveData; }
 
-    private void initialize() {
-        acceleration = new Acceleration();
-        lowPassFilter = new LowPassFilter();
-        northPointerPositionLiveData.postValue(0.0);
-        ringAngleLiveData.postValue(0.0f);
-    }
-
-    void rotate(double delta) {
-        double angle = Degree.normalize(ringAngleLiveData.getValue() + delta);
-        ringAngleLiveData.postValue((float)angle);
+    void rotateRing(double deltaInDegree) {
+        double degree = Degree.normalize(ringAngleLiveData.getValue() + deltaInDegree);
+        ringAngleLiveData.postValue((float)degree);
     }
 
     void reset() {
@@ -47,29 +39,13 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     void seek() {
-        float degree = (float)Angle.toDegree(acceleration.getPosition());
-        ringAngleLiveData.postValue(-degree);
+        double degree = northPointerPositionLiveData.getValue();
+        ringAngleLiveData.postValue((float)-degree);
     }
 
-    void updateNorthPointer() {
-        northPointerPositionLiveData.postValue(acceleration.getPosition());
-    }
-
-    void update(float[] orientationAngles) {
-        Vector gravity = lowPassFilter.setAcceleration(orientationAngles);
-        update(gravity.x, Angle.normalizePlusMinusPI(gravity.z));
-    }
-
-    private static final double PI_90 = 0.5 * Math.PI;
-
-    private void update(double azimuth, double roll) {
-        if (roll < -PI_90 || roll > PI_90) {
-            azimuth = Angle.normalize(0 - azimuth); // look at screen from below
-        }
-        updateAcceleration(azimuth);
-    }
-
-    private void updateAcceleration(double newAngle) {
-        acceleration.rotateTo(newAngle);
+    void updateNorthPointer(Orientation orientation) {
+        double azimuth = orientation.getAzimuth();
+        northPointerPositionLiveData.postValue((float)azimuth);
     }
 }
+

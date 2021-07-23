@@ -45,5 +45,31 @@ public class Degree {
     public static float getAngleDifference(float from, float to) {
         return normalizePlusMinus(to - from);
     }
+
+    public static double sin(double degree) {
+        return Math.sin(Math.toRadians(degree));
+    }
+
+    public static double cos(double degree) {
+        return Math.cos(Math.toRadians(degree));
+    }
+
+    public static double tan(double degree) {
+        return Math.tan(Math.toRadians(degree));
+    }
+
+    public static double arcTan2(double y, double x) {
+        return Math.toDegrees(Math.atan2(y, x));
+    }
+
+    public static double arcSin(double x) {
+        return Math.toDegrees(Math.asin(x));
+    }
+
+    public static double arcCos(double x) {
+        return Math.toDegrees(Math.acos(x));
+    }
+
+
 }
 

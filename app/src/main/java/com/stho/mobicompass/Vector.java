@@ -1,62 +1,71 @@
 package com.stho.mobicompass;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by shoedtke on 23.12.2015.
  */
 @SuppressWarnings("WeakerAccess")
 public class Vector {
-    public float x;
-    public float y;
-    public float z;
-    private boolean hasValues = false;
+    public final Double x;
+    public final Double y;
+    public final Double z;
 
-    public Vector() {
-        this(0, 0, 0);
-    }
+    public static Vector defaultValue() { return new Vector(0.0, 0.0, 0.0); }
 
-    public Vector(float[] values) {
-        this(values[0], values[1], values[2]);
-    }
-
-    public Vector(float x, float y, float z) {
+    public Vector(Double x, Double y, Double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public void setValues(float[] values) {
-        this.x = values[0];
-        this.y = values[1];
-        this.z = values[2];
-        hasValues = true;
+    public double norm() {
+        return Math.sqrt(normSquare());
     }
 
-    public float[] getValues() {
-        return new float[] {x, y, z};
+    public double normSquare() {
+        return x * x + y * y + z * z;
     }
 
-    public boolean hasValues() {
-        return hasValues;
+    public Vector cross(Vector v) {
+        return Vector.cross(this, v);
     }
 
-    @NotNull
-    public Vector clone() {
-        return new Vector(this.x, this.y, this.z);
+    public double dot(Vector v) {
+        return Vector.dot(this, v);
     }
 
-    public float getLength() {
-        return (float)Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    public Vector times(double f) {
+        return new Vector(
+                f * x,
+                f * y,
+                f * z);
     }
 
-    public int getDimension() {
-        return 3;
+    public Vector div(double f) {
+        return new Vector(
+                x / f,
+                y / f,
+                z / f);
     }
 
-    public void reset() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+    public static Vector fromFloatArray(float[] array) {
+        return new Vector(
+                (double)array[0],
+                (double)array[1],
+                (double)array[2]);
+    }
+
+    private static double dot(Vector a, Vector b) {
+        return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
+    private static Vector cross(Vector a, Vector b) {
+        return new Vector(
+                a.y * b.z - a.z * b.y,
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x);
     }
 }
+
+
+
