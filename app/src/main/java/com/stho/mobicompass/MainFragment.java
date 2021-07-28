@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -40,12 +41,10 @@ public class MainFragment extends Fragment {
         binding.compassRing.setOnRotateListener(delta -> viewModel.rotateRing(delta));
         binding.compassRing.setOnDoubleTapListener(() -> viewModel.seek());
         binding.headline.setOnClickListener(view -> viewModel.reset());
-        viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), alpha -> binding.compassRing.setRotation(alpha));
-        viewModel.getNorthPointerPositionLD().observe(getViewLifecycleOwner(), angle -> {
-            binding.compassNorthPointer.setRotation(-angle);
-            binding.headline.setText(Formatter.toString0(angle));
-        });
-        viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), direction -> binding.headline.setText(direction));
+        viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), this::observeRingAngle);
+        viewModel.getNorthPointerPositionLD().observe(getViewLifecycleOwner(), this::observeNorthPointer);
+        viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
+        viewModel.getManualModeLD().observe(getViewLifecycleOwner(), this::observeManualMode);
         return binding.getRoot();
     }
 
@@ -78,6 +77,22 @@ public class MainFragment extends Fragment {
 
     private void removeHandler() {
         handler.removeCallbacksAndMessages(null);
+    }
+
+    private void observeRingAngle(float angle) {
+        binding.compassRing.setRotation(-angle);
+    }
+
+    private void observeNorthPointer(float angle) {
+        binding.compassNorthPointer.setRotation(-angle);
+    }
+
+    private void observeDirection(String direction) {
+        binding.headline.setText(direction);
+    }
+
+    private void observeManualMode(boolean manualMode) {
+        binding.headline.setTextColor(ContextCompat.getColor(requireContext(), manualMode ? R.color.colorPrimaryTextAccent : R.color.colorPrimaryText));
     }
 }
 

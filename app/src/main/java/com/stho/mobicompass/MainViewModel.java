@@ -24,28 +24,51 @@ public class MainViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Float> northPointerPositionLiveData = new MutableLiveData<>();
     private final MutableLiveData<Float> ringAngleLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> manualModeLiveData = new MutableLiveData<>();
 
     LiveData<Float> getNorthPointerPositionLD() { return northPointerPositionLiveData; }
-    LiveData<String> getDirectionNameLD() { return Transformations.map(northPointerPositionLiveData, Direction::getName); }
+    LiveData<String> getDirectionNameLD() { return Transformations.map(ringAngleLiveData, Direction::getName); }
     LiveData<Float> getRingAngleLD() { return ringAngleLiveData; }
+    LiveData<Boolean> getManualModeLD() { return manualModeLiveData; }
 
+    /**
+     * Synchronous, call from UI thread only
+     * @param deltaInDegree
+     */
     void rotateRing(double deltaInDegree) {
-        double degree = Degree.normalize(ringAngleLiveData.getValue() + deltaInDegree);
-        ringAngleLiveData.postValue((float)degree);
+        double degree = Degree.normalize(assureValue(ringAngleLiveData.getValue()) - deltaInDegree);
+        manualModeLiveData.setValue(true);
+        ringAngleLiveData.setValue((float)degree);
     }
 
     void reset() {
-        ringAngleLiveData.postValue(0f);
+        manualModeLiveData.setValue(false);
     }
 
     void seek() {
-        double degree = northPointerPositionLiveData.getValue();
-        ringAngleLiveData.postValue((float)-degree);
+        manualModeLiveData.setValue(false);
     }
 
     void updateNorthPointer(Orientation orientation) {
         double azimuth = orientation.getAzimuth();
         northPointerPositionLiveData.postValue((float)azimuth);
+
+        if (isAutomaticMode()) {
+            ringAngleLiveData.postValue((float)azimuth);
+        }
     }
+
+    private boolean isAutomaticMode() {
+        return !assureValue(manualModeLiveData.getValue());
+    }
+
+    private static float assureValue(Float value) {
+        return (value == null) ? (float) 0.0 : value;
+    }
+
+    private static boolean assureValue(Boolean value) {
+        return (value != null) && value;
+    }
+
 }
 
