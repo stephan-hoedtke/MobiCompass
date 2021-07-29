@@ -17,14 +17,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15" />
+            app:layout_constraintGuide_percent="0.20" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_guideline2"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.85" />
+            app:layout_constraintGuide_percent="0.80" />
 
         <FrameLayout
             android:layout_width="0dp"
@@ -72,11 +72,26 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/narrow_margin"
             android:text="@string/label_default_headline"
-            app:layout_constraintTop_toTopOf="@id/horizontal_guideline2"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline1"
             android:textColor="@color/colorPrimaryText"
             android:textSize="20sp"
             android:textAlignment="center" />
+
+        <ImageView
+            android:id="@+id/button_manual_mode"
+            android:layout_width="@dimen/button_size"
+            android:layout_height="@dimen/button_size"
+            app:layout_constraintTop_toTopOf="@id/horizontal_guideline2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/auto"
+            android:contentDescription="@string/label_toggle_manual_mode"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

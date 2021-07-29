@@ -19,7 +19,7 @@ public class MainFragment extends Fragment {
     private final Handler handler = new Handler();
     private MainViewModel viewModel;
     private MainFragmentBinding binding;
-    private IOrientationFilter filter;
+    private OrientationSensorListener.IOrientationFilter filter;
     private OrientationSensorListener sensorListener ;
     public static MainFragment build() {
         return new MainFragment();
@@ -39,8 +39,8 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
         binding.compassRing.setOnRotateListener(delta -> viewModel.rotateRing(delta));
-        binding.compassRing.setOnDoubleTapListener(() -> viewModel.seek());
-        binding.headline.setOnClickListener(view -> viewModel.reset());
+        binding.compassRing.setOnDoubleTapListener(() -> viewModel.reset());
+        binding.buttonManualMode.setOnClickListener(view -> viewModel.toggleManualMode());
         viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), this::observeRingAngle);
         viewModel.getNorthPointerPositionLD().observe(getViewLifecycleOwner(), this::observeNorthPointer);
         viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
@@ -92,7 +92,9 @@ public class MainFragment extends Fragment {
     }
 
     private void observeManualMode(boolean manualMode) {
-        binding.headline.setTextColor(ContextCompat.getColor(requireContext(), manualMode ? R.color.colorPrimaryTextAccent : R.color.colorPrimaryText));
+        binding.buttonManualMode.setImageResource(
+                manualMode ? R.drawable.manual : R.drawable.auto
+        );
     }
 }
 

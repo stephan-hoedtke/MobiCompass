@@ -11,6 +11,11 @@ import android.view.WindowManager;
 
 public class OrientationSensorListener implements SensorEventListener {
 
+    interface IOrientationFilter {
+        void onOrientationAnglesChanged(Quaternion orientation);
+        Orientation getCurrentOrientation();
+
+    }
     private final IOrientationFilter filter;
     private final SensorManager sensorManager;
     private final WindowManager windowManager;
@@ -38,6 +43,9 @@ public class OrientationSensorListener implements SensorEventListener {
     public void onResume() {
         // TODO: for API30 you shall user: context.display.rotation
         display = windowManager.getDefaultDisplay();
+        hasMagnetometer = false;
+        hasAccelerationMagnetometer = false;
+        hasGyro = false;
         initializeRotationVectorSensor();
     }
 

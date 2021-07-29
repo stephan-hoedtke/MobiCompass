@@ -1,16 +1,12 @@
 package com.stho.mobicompass;
 
-interface IOrientationFilter {
-    void onOrientationAnglesChanged(Quaternion orientation);
-    Orientation getCurrentOrientation();
 
-}
 /*
     The class takes updates of the orientation vector by listening to onOrientationChanged(rotationMatrix).
     The values will be stored and smoothed with acceleration.
     A handler will regularly read the updated smoothed orientation
  */
-class OrientationAccelerationFilter implements IOrientationFilter {
+class OrientationAccelerationFilter implements OrientationSensorListener.IOrientationFilter {
 
     private final QuaternionAcceleration acceleration = QuaternionAcceleration.create(DEFAULT_ACCELERATION_FACTOR);
 

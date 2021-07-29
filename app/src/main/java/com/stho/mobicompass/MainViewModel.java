@@ -42,21 +42,26 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     void reset() {
-        manualModeLiveData.setValue(false);
-    }
-
-    void seek() {
-        manualModeLiveData.setValue(false);
+        manualModeLiveData.setValue(true);
+        ringAngleLiveData.setValue(0f);
     }
 
     void updateNorthPointer(Orientation orientation) {
-        double azimuth = orientation.getAzimuth();
-        northPointerPositionLiveData.postValue((float)azimuth);
-
-        if (isAutomaticMode()) {
-            ringAngleLiveData.postValue((float)azimuth);
+        double newAzimuth = orientation.getAzimuth();
+        float oldAzimuth = assureValue(northPointerPositionLiveData.getValue());
+        if (Math.abs(oldAzimuth - newAzimuth) > EPS) {
+            northPointerPositionLiveData.postValue((float) newAzimuth);
+            if (isAutomaticMode()) {
+                ringAngleLiveData.postValue((float) newAzimuth);
+            }
         }
     }
+
+    void toggleManualMode() {
+        manualModeLiveData.setValue(isAutomaticMode());
+    }
+
+    private static final double EPS = 0.0000001;
 
     private boolean isAutomaticMode() {
         return !assureValue(manualModeLiveData.getValue());
