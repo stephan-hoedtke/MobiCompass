@@ -16,6 +16,7 @@ public class MainViewModel extends AndroidViewModel {
         super(application);
         northPointerPositionLiveData.setValue(0f);
         ringAngleLiveData.setValue(0f);
+        manualModeLiveData.setValue(false);
     }
 
     static MainViewModel build(@NonNull Fragment fragment) {

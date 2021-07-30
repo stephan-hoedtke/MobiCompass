@@ -41,11 +41,16 @@ public class MainFragment extends Fragment {
         binding.compassRing.setOnRotateListener(delta -> viewModel.rotateRing(delta));
         binding.compassRing.setOnDoubleTapListener(() -> viewModel.reset());
         binding.buttonManualMode.setOnClickListener(view -> viewModel.toggleManualMode());
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         viewModel.getRingAngleLD().observe(getViewLifecycleOwner(), this::observeRingAngle);
         viewModel.getNorthPointerPositionLD().observe(getViewLifecycleOwner(), this::observeNorthPointer);
         viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
         viewModel.getManualModeLD().observe(getViewLifecycleOwner(), this::observeManualMode);
-        return binding.getRoot();
     }
 
     @Override
@@ -92,10 +97,33 @@ public class MainFragment extends Fragment {
     }
 
     private void observeManualMode(boolean manualMode) {
-        binding.buttonManualMode.setImageResource(
-                manualMode ? R.drawable.manual : R.drawable.auto
-        );
+        if (manualMode) {
+            // manual --> show the AUTO icon
+            handler.postDelayed(this::fadeInAutoIcon, 1000);
+        } else {
+            handler.postDelayed(this::fadeOutAutoIcon, 3000);
+        }
+    }
+
+    private void fadeInAutoIcon() {
+        // binding.buttonManualMode.setAlpha(0f);
+        binding.buttonManualMode.setVisibility(View.VISIBLE);
+        binding.buttonManualMode.animate()
+                .alpha(1f)
+                .setDuration(700)
+                .setListener(null);
+    }
+
+    private void fadeOutAutoIcon() {
+        // binding.buttonManualMode.setAlpha(1f);
+        binding.buttonManualMode.setVisibility(View.VISIBLE);
+        binding.buttonManualMode.animate()
+                .alpha(0f)
+                .setDuration(700)
+                .setListener(null);
     }
 }
+
+
 
 
