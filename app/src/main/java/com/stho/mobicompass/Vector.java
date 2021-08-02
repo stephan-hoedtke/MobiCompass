@@ -18,6 +18,10 @@ public class Vector {
         this.z = z;
     }
 
+    public Vector normalize() {
+        return this.div(norm());
+    }
+
     public double norm() {
         return Math.sqrt(normSquare());
     }

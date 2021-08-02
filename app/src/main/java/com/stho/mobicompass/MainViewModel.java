@@ -34,7 +34,7 @@ public class MainViewModel extends AndroidViewModel {
 
     /**
      * Synchronous, call from UI thread only
-     * @param deltaInDegree
+     * @param deltaInDegree delta rotation angle in degree
      */
     void rotateRing(double deltaInDegree) {
         double degree = Degree.normalize(assureValue(ringAngleLiveData.getValue()) - deltaInDegree);

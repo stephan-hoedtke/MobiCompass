@@ -86,23 +86,23 @@ public class RotaryView extends AppCompatImageView {
     public boolean onTouchEvent(MotionEvent event) {
         gestureDetector.onTouchEvent(event);
         if (simpleRotaryDragMode) {
-            return onTouchEventSimpleMode(event);
+            onTouchEventSimpleMode(event);
         }
         else {
-            return onTouchEventComplexMode(event);
+            onTouchEventComplexMode(event);
         }
+        return true;
     }
 
-    public boolean onTouchEventSimpleMode(MotionEvent event) {
+    public void onTouchEventSimpleMode(MotionEvent event) {
         // The rotation follows the finger position directly. Wherever you tap the pointer will point to.
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             final double delta = ensureAngleRange(getAngle(event.getX(), event.getY()));
             rotate(delta);
         }
-        return true;
     }
 
-    public boolean onTouchEventComplexMode(MotionEvent event) {
+    public void onTouchEventComplexMode(MotionEvent event) {
         // The rotations changes as the finger changes. You can move the pointer from other positions by swiping.
          switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -117,7 +117,6 @@ public class RotaryView extends AppCompatImageView {
                 rotate(delta);
                 break;
         }
-        return true;
     }
 
     private double getAngle(float x, float y) {

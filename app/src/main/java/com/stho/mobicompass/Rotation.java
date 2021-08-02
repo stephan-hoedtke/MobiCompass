@@ -11,8 +11,8 @@ public class Rotation {
      *
      *          --> C = (-m13, -m23, -m33)
      *
-     *              center azimuth  = atan2(-m13, -m23)
-     *              center azimuth = asin(-m33) // opposite of pitch
+     *              center azimuth  = arcTan2(-m13, -m23)
+     *              center azimuth = arcSin(-m33) // opposite of pitch
      */
     public static Orientation getOrientationFor(RotationMatrix m) {
         double m12 = m.m12;
@@ -65,44 +65,6 @@ public class Rotation {
     private static final double FREE_FALL_GRAVITY_SQUARED = 0.01 * 9.81 * 9.81;
     private static final double FREE_FALL_MAGNETOMETER_SQUARED = 0.01;
 
-    public static RotationMatrix getRotationMatrixFromAccelerationMagnetometer(Vector acceleration, Vector magnetometer, RotationMatrix defaultValue) {
-        RotationMatrix matrix = getRotationMatrixFromAccelerationMagnetometer(acceleration, magnetometer);
-        return (matrix == null) ? defaultValue : matrix;
-    }
-
-    /**
-     * Returns the rotation matrix M for a device defined by the gravity and the geomagnetic vector
-     *      in case of free fall or close to magnetic pole it returns null
-     *      as the rotation matrix cannot be calculated
-     *
-     * @param acceleration acceleration (a vector pointing upwards in default position)
-     * @param magnetometer magnetic (a vector pointing down to the magnetic north)
-     *
-     * see also: SensorManager.getRotationMatrix()
-     */
-    public static RotationMatrix getRotationMatrixFromAccelerationMagnetometer(Vector acceleration, Vector magnetometer) {
-        double normSquareA = acceleration.normSquare();
-        if (normSquareA < FREE_FALL_GRAVITY_SQUARED) {
-            // free fall detected, typical values of gravity should be 9.81
-            return null;
-        }
-
-        Vector H = magnetometer.cross(acceleration);
-        double normSquareH = H.normSquare();
-        if (normSquareH < FREE_FALL_MAGNETOMETER_SQUARED) {
-            // free fall or in space or close to magnetic north pole, typical values of magnetometer should be more than 100
-            return null;
-        }
-
-        Vector h = H.div(Math.sqrt(normSquareH));
-        Vector a = acceleration.div(Math.sqrt(normSquareA));
-        Vector m = a.cross(h);
-        return new RotationMatrix(
-                h.x, h.y, h.z,
-                m.x, m.y, m.z,
-                a.x, a.y, a.z);
-    }
-
     /**
      * Returns the rotation matrix as integration of angle velocity from gyroscope of a time period
      *
@@ -130,6 +92,21 @@ public class Rotation {
 
 
     /**
+     * The rotation is not exactly the same, but similar to the "default approach":
+     *      theta = ||omega|| * dt
+     *      Q = Q(s = cos(theta/2), v = sin(theta2) * |omega|)
+     *
+     * @param omega angle velocity around x, y, z, in radians/second
+     * @param dt time period in seconds
+     */
+    public static Quaternion getRotationFromGyroFSCF(Vector omega, double dt) {
+        double alpha = omega.x * dt;
+        double beta = omega.y * dt;
+        double gamma = omega.z * dt;
+        return new Quaternion(alpha / 2, beta / 2, gamma / 2, 1.0);
+    }
+
+    /**
      * Returns if sin(x) is about +/- 1.0
      */
     private static boolean isGimbalLockForSinus(double sinX) {
@@ -137,7 +114,7 @@ public class Rotation {
     }
 
     /**
-     * Returns if x^2 +y^2 is too small to calculate the atan2
+     * Returns if x^2 +y^2 is too small to calculate the arcTan2
      */
     private static boolean isGimbalLockForCenter(double sinX, double cosX) {
         return (Math.abs(sinX) < GIMBAL_LOCK_SINUS_TOLERANCE) && (Math.abs(cosX) < GIMBAL_LOCK_SINUS_TOLERANCE);
@@ -149,7 +126,7 @@ public class Rotation {
      *      --> z = +/- 1.0
      *          x = +/- 0.0
      *          y = +/- 0.0
-     *      --> atan2(...,...) can be anything.
+     *      --> arcTan2(...,...) can be anything.
      *
      * Tolerance estimation:
      *      x,y < 0.001 --> z > sqrt(1 - x * x - y * y) = sqrt(0.999998) = 0.999999 --> 89.92°

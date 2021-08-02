@@ -29,15 +29,15 @@ public class RotationMatrix {
 
     public static RotationMatrix fromFloatArray(float[] m) {
         return new RotationMatrix(
-                (double) m[0],
-                (double) m[1],
-                (double) m[2],
-                (double) m[3],
-                (double) m[4],
-                (double) m[5],
-                (double) m[6],
-                (double) m[7],
-                (double) m[8]);
+                m[0],
+                m[1],
+                m[2],
+                m[3],
+                m[4],
+                m[5],
+                m[6],
+                m[7],
+                m[8]);
     }
 }
 

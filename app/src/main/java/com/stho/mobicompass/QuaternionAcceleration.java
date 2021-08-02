@@ -17,10 +17,6 @@ public class QuaternionAcceleration {
                 this.t0 = timeSource.getElapsedRealtimeSeconds();
         }
 
-        public static QuaternionAcceleration create() {
-                return new QuaternionAcceleration(0.25, new SystemClockTimeSource());
-        }
-
         public static QuaternionAcceleration create(double factorInSeconds) {
                 return new QuaternionAcceleration(factorInSeconds, new SystemClockTimeSource());
         }

@@ -1,5 +1,6 @@
 package com.stho.mobicompass;
 
+import android.animation.Animator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -8,7 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -21,11 +21,7 @@ public class MainFragment extends Fragment {
     private MainFragmentBinding binding;
     private OrientationSensorListener.IOrientationFilter filter;
     private OrientationSensorListener sensorListener ;
-    public static MainFragment build() {
-        return new MainFragment();
-    }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,29 +94,31 @@ public class MainFragment extends Fragment {
 
     private void observeManualMode(boolean manualMode) {
         if (manualMode) {
-            // manual --> show the AUTO icon
-            handler.postDelayed(this::fadeInAutoIcon, 1000);
+            handler.postDelayed(this::fadeInAutoIcon, 10);
         } else {
-            handler.postDelayed(this::fadeOutAutoIcon, 3000);
+            handler.postDelayed(this::fadeOutAutoIcon, 300);
         }
     }
 
     private void fadeInAutoIcon() {
-        // binding.buttonManualMode.setAlpha(0f);
         binding.buttonManualMode.setVisibility(View.VISIBLE);
         binding.buttonManualMode.animate()
                 .alpha(1f)
-                .setDuration(700)
+                .setDuration(500)
                 .setListener(null);
     }
 
     private void fadeOutAutoIcon() {
-        // binding.buttonManualMode.setAlpha(1f);
         binding.buttonManualMode.setVisibility(View.VISIBLE);
         binding.buttonManualMode.animate()
                 .alpha(0f)
-                .setDuration(700)
-                .setListener(null);
+                .setDuration(500)
+                .setListener(new OnAnimationEndListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        binding.buttonManualMode.setVisibility(View.INVISIBLE);
+                    }
+                });
     }
 }
 

@@ -29,23 +29,20 @@ public class OrientationSensorListener implements SensorEventListener {
     private final float[] accelerometerReading = new float[3];
     private final float[] magnetometerReading = new float[3];
     private final float[] gyroscopeReading = new float[3];
-    private final float[] rotationMatrixAdjusted = new float[9];
-    private final float[] orientationAngles = new float[3];
-    private boolean hasMagnetometer = false;
-    private boolean hasAccelerationMagnetometer = false;
-    private boolean hasGyro = false;
-    private Quaternion accelerationMagnetometerOrientation = Quaternion.defaultValue();
-    private Quaternion estimate = Quaternion.defaultValue();
-    private Display display;
     private final Timer timer = new Timer();
 
+    private boolean hasAccelerometer = false;
+    private boolean hasMagnetometer = false;
+    private boolean hasEstimate = false;
+    private Quaternion estimate = Quaternion.defaultValue();
+    private Display display;
 
     public void onResume() {
         // TODO: for API30 you shall user: context.display.rotation
         display = windowManager.getDefaultDisplay();
+        hasAccelerometer = false;
         hasMagnetometer = false;
-        hasAccelerationMagnetometer = false;
-        hasGyro = false;
+        hasEstimate = false;
         initializeRotationVectorSensor();
     }
 
@@ -82,7 +79,7 @@ public class OrientationSensorListener implements SensorEventListener {
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.length);
-                updateOrientationAnglesFromAcceleration();
+                hasAccelerometer = true;
                 break;
 
             case Sensor.TYPE_MAGNETIC_FIELD:
@@ -97,18 +94,20 @@ public class OrientationSensorListener implements SensorEventListener {
         }
     }
 
-    // Compute the three orientation angles based on the most recent readings from
-    // the device's accelerometer and magnetometer.
-    private void updateOrientationAnglesFromAcceleration() {
-        if (!hasMagnetometer)
-            return;
-
+    // Compute the orientation based on the most recent readings from the device's accelerometer and magnetometer.
+    private Quaternion getOrientationFromAccelerometerMagnetometer() {
+        if (!hasAccelerometer) {
+            return null;
+        }
+        if (!hasMagnetometer) {
+            return null;
+        }
         float[] rotationMatrix = new float[9];
         if (SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading)) {
             RotationMatrix matrix = RotationMatrix.fromFloatArray(getAdjustedRotationMatrix(rotationMatrix));
-            accelerationMagnetometerOrientation = Quaternion.fromRotationMatrix(matrix);
-            hasAccelerationMagnetometer = true;
+            return Quaternion.fromRotationMatrix(matrix);
         }
+        return null;
     }
 
     /*
@@ -138,14 +137,19 @@ public class OrientationSensorListener implements SensorEventListener {
     }
 
     private void updateOrientationAnglesFromGyroscope() {
-        // If acceleration is not initialized yet, don't continue...
-        if (!hasAccelerationMagnetometer)
+        if (!hasAccelerometer) {
             return;
-
-        // If gyro is not initialized yet, do it now...
-        if (!hasGyro) {
-            estimate = Quaternion.defaultValue().times(accelerationMagnetometerOrientation);
-            hasGyro = true;
+        }
+        if (!hasMagnetometer) {
+            return;
+        }
+        if (!hasEstimate) {
+            Quaternion orientation = getOrientationFromAccelerometerMagnetometer();
+            if (orientation == null) {
+                return;
+            }
+            estimate = orientation;
+            hasEstimate = true;
         }
 
         double dt = timer.getNextTime();
@@ -155,18 +159,76 @@ public class OrientationSensorListener implements SensorEventListener {
         }
     }
 
+    /**
+     * Fast AHRS Filter for Accelerometer, Magnetometer, and Gyroscope Combination with Separated Sensor Corrections
+     *      by Josef Justa, Vaclav Smidl, Alex Hamacek, April 2020
+     */
     private void filterUpdate(double dt) {
 
+        Vector a = Vector.fromFloatArray(accelerometerReading).normalize();
+        Vector m = Vector.fromFloatArray(magnetometerReading).normalize();
         Vector omega = Vector.fromFloatArray(gyroscopeReading);
 
         // Get updated Gyro delta rotation from gyroscope readings
-        Quaternion deltaRotation = Rotation.getRotationFromGyro(omega, dt);
+        Quaternion deltaRotation = Rotation.getRotationFromGyroFSCF(omega, dt);
 
-        // update the gyro orientation
-        Quaternion gyroOrientation = estimate.times(deltaRotation);
+        Quaternion prediction = estimate.times(deltaRotation);
+        RotationMatrix matrix = prediction.toRotationMatrix();
 
-        // fuse sensors
-        estimate = Quaternion.interpolate(gyroOrientation, accelerationMagnetometerOrientation, DEFAULT_FILTER_COEFFICIENT);
+        // prediction of a := Vector(0.0, 0.0, 1.0).rotateBy(prediction.inverse()) --> normalized
+        Vector aPrediction = new Vector(
+                matrix.m31,
+                matrix.m32,
+                matrix.m33);
+
+        // reference direction of magnetic field in earth frame after distortion compensation
+        Vector b = flux(aPrediction, m);
+
+        // prediction of m := Vector(0.0, b.y, b.z).rotateBy(prediction.inverse()) --> normalized
+        Vector mPrediction = new Vector(
+                matrix.m21 * b.y + matrix.m31 * b.z,
+                matrix.m22 * b.y + matrix.m32 * b.z,
+                matrix.m23 * b.y + matrix.m33 * b.z);
+
+        double aAlpha = Math.acos(a.dot(aPrediction));
+        Vector aCorrectionRaw = a.cross(aPrediction);
+        double aNorm = aCorrectionRaw.norm();
+        Vector aCorrection = (aNorm > EPS) ? aCorrectionRaw.div(aNorm) : Vector.defaultValue();
+
+        double mAlpha = Math.acos(m.dot(mPrediction));
+        Vector mCorrectionRaw = m.cross(mPrediction);
+        double mNorm = mCorrectionRaw.norm();
+        Vector mCorrection = (mNorm > EPS) ? mCorrectionRaw.div(mNorm) : Vector.defaultValue();
+
+        double aBeta = 0.5 * Math.min(aAlpha * LAMBDA1, LAMBDA2);
+        double mBeta = 0.5 * Math.min(mAlpha * LAMBDA1, LAMBDA2);
+
+        Vector fCorrection = new Vector(
+                aCorrection.x * aBeta + mCorrection.x * mBeta,
+                aCorrection.y * aBeta + mCorrection.y * mBeta,
+                aCorrection.z * aBeta + mCorrection.z * mBeta);
+
+        double fNorm = fCorrection.norm();
+        if (fNorm > EPS) {
+            Quaternion qCorrection = new Quaternion(fCorrection.x, fCorrection.y, fCorrection.z, 1.0);
+            estimate = prediction.times(qCorrection).normalize();
+        }
+        else {
+            estimate = prediction;
+        }
+    }
+
+    private static final double EPS = 0.0000001;
+    private static final double LAMBDA1 = 0.005;
+    private static final double LAMBDA2 = 0.035;
+
+    /**
+     * Returns the magnetic field in earth frame after distortion correction
+     */
+    private static Vector flux(Vector a, Vector m) {
+        double bz = (a.x * m.x + a.y * m.y + a.z * m.z) / (a.norm() * m.norm());
+        double by = Math.sqrt(1 - bz * bz);
+        return new Vector(0.0, by, bz);
     }
 
     private static final double DEFAULT_FILTER_COEFFICIENT = 0.001;

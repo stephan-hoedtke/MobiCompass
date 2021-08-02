@@ -70,16 +70,6 @@ class Orientation {
             return this;
         }
     }
-
-    static Orientation defaultValue() {
-        return new Orientation(
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                -90.0
-        );
-    }
 }
 
 
