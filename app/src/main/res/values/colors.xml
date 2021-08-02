@@ -2,10 +2,8 @@
 <resources>
     <color name="colorAccent">#000000</color>
     <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryLight">#7f0000</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorPrimaryText">#dbdbdb</color>
     <color name="colorPrimaryTextAccent">#e0cbcb</color>
-    <color name="colorPrimaryTextDark">#711000</color>
     <color name="colorBackground">#000000</color>
 </resources>

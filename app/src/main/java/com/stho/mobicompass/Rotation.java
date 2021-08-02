@@ -1,5 +1,6 @@
 package com.stho.mobicompass;
 
+@SuppressWarnings("unused")
 public class Rotation {
 
     /**
@@ -61,9 +62,6 @@ public class Rotation {
             }
         }
     }
-
-    private static final double FREE_FALL_GRAVITY_SQUARED = 0.01 * 9.81 * 9.81;
-    private static final double FREE_FALL_MAGNETOMETER_SQUARED = 0.01;
 
     /**
      * Returns the rotation matrix as integration of angle velocity from gyroscope of a time period

@@ -38,13 +38,6 @@ public class Vector {
         return Vector.dot(this, v);
     }
 
-    public Vector times(double f) {
-        return new Vector(
-                f * x,
-                f * y,
-                f * z);
-    }
-
     public Vector div(double f) {
         return new Vector(
                 x / f,

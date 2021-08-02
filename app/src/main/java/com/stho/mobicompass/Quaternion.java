@@ -5,6 +5,7 @@ package com.stho.mobicompass;
  * https://mathworld.wolfram.com/Quaternion.html
  * https://www.ashwinnarayan.com/post/how-to-integrate-quaternions/
  */
+@SuppressWarnings("unused")
 class Quaternion {
 
     public final double x;

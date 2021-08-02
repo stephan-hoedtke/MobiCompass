@@ -1,5 +1,6 @@
 package com.stho.mobicompass;
 
+@SuppressWarnings("unused")
 public class Timer {
     private final SystemClockTimeSource timeSource = new SystemClockTimeSource();
     private double startTime = timeSource.getElapsedRealtimeSeconds();

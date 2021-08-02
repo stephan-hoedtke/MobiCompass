@@ -20,20 +20,17 @@ public class RotaryView extends AppCompatImageView {
 
     private OnRotateListener rotateListener;
     private OnDoubleTapListener doubleTapListener;
-    private boolean simpleRotaryDragMode;
     private double previousAngle = 0;
     private GestureDetector gestureDetector;
 
     public RotaryView(Context context) {
         super(context);
-        simpleRotaryDragMode = false;
         setupGestureDetector();
         setImageResource(R.drawable.magnetic_compass_ring);
     }
 
     public RotaryView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        simpleRotaryDragMode = false;
         setupGestureDetector();
         setImageResource(R.drawable.magnetic_compass_ring);
     }
@@ -65,14 +62,6 @@ public class RotaryView extends AppCompatImageView {
             doubleTapListener.onDoubleTap();
     }
 
-    public boolean getSimpleRotaryDragMode() {
-        return this.simpleRotaryDragMode;
-    }
-
-    public void setSimpleRotaryDragMode(boolean value) {
-        this.simpleRotaryDragMode = value;
-    }
-
     public void setOnRotateListener(OnRotateListener listener) {
         this.rotateListener = listener;
     }
@@ -85,26 +74,12 @@ public class RotaryView extends AppCompatImageView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         gestureDetector.onTouchEvent(event);
-        if (simpleRotaryDragMode) {
-            onTouchEventSimpleMode(event);
-        }
-        else {
-            onTouchEventComplexMode(event);
-        }
+        onTouchEventRotationDragHandler(event);
         return true;
     }
 
-    public void onTouchEventSimpleMode(MotionEvent event) {
-        // The rotation follows the finger position directly. Wherever you tap the pointer will point to.
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            final double delta = ensureAngleRange(getAngle(event.getX(), event.getY()));
-            rotate(delta);
-        }
-    }
-
-    public void onTouchEventComplexMode(MotionEvent event) {
-        // The rotations changes as the finger changes. You can move the pointer from other positions by swiping.
-         switch (event.getAction()) {
+    public void onTouchEventRotationDragHandler(MotionEvent event) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
                 previousAngle = getRotation() + getAngle(event.getX(), event.getY());

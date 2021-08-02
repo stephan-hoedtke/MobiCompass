@@ -1,5 +1,6 @@
 package com.stho.mobicompass;
 
+@SuppressWarnings("unused")
 public class QuaternionAcceleration {
 
         private final TimeSource timeSource;

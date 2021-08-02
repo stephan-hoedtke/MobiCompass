@@ -230,6 +230,4 @@ public class OrientationSensorListener implements SensorEventListener {
         double by = Math.sqrt(1 - bz * bz);
         return new Vector(0.0, by, bz);
     }
-
-    private static final double DEFAULT_FILTER_COEFFICIENT = 0.001;
 }
