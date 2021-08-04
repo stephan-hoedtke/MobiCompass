@@ -43,18 +43,19 @@ public class OrientationSensorListener implements SensorEventListener {
         hasAccelerometer = false;
         hasMagnetometer = false;
         hasEstimate = false;
-        initializeRotationVectorSensor();
+        timer.reset();
+        registerSensorListeners();
     }
 
     public void onPause() {
         display = null;
-        removeSensorListeners();
+        unregisterSensorListeners();
     }
 
     /**
      * The rotation vector sensor is fusing gyroscope, accelerometer and magnetometer. No further sensor fusion required.
      */
-    private void initializeRotationVectorSensor() {
+    private void registerSensorListeners() {
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_GAME);
 
@@ -65,7 +66,7 @@ public class OrientationSensorListener implements SensorEventListener {
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_GAME);
     }
 
-    private void removeSensorListeners() {
+    private void unregisterSensorListeners() {
         sensorManager.unregisterListener(this);
     }
 
@@ -150,6 +151,7 @@ public class OrientationSensorListener implements SensorEventListener {
             }
             estimate = orientation;
             hasEstimate = true;
+            timer.reset();
         }
 
         double dt = timer.getNextTime();
