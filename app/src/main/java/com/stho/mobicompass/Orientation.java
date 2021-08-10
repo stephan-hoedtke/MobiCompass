@@ -36,13 +36,13 @@ package com.stho.mobicompass;
  * Altitude (top edge of the device pointing upwards) is the opposite of pitch (top edge of the device pointing downwards)
  */
 class Orientation {
-    private final Double azimuth;
-    private final Double pitch;
-    private final Double roll;
-    private final Double centerAzimuth;
-    private final Double centerAltitude;
+    private final double azimuth;
+    private final double pitch;
+    private final double roll;
+    private final double centerAzimuth;
+    private final double centerAltitude;
 
-    Orientation(Double azimuth, Double pitch, Double roll, Double centerAzimuth, Double centerAltitude) {
+    Orientation(double azimuth, double pitch, double roll, double centerAzimuth, double centerAltitude) {
         this.azimuth = azimuth;
         this.pitch = pitch;
         this.roll = roll;
@@ -50,12 +50,12 @@ class Orientation {
         this.centerAltitude = centerAltitude;
     }
 
-    Double getAzimuth() { return azimuth; }
-    Double getPitch() { return pitch; }
-    Double getRoll() { return roll; }
-    Double getCenterAzimuth() { return centerAzimuth; }
-    Double getCenterAltitude() { return centerAltitude; }
-    Double getAltitude() { return -pitch; }
+    double getAzimuth() { return azimuth; }
+    double getPitch() { return pitch; }
+    double getRoll() { return roll; }
+    double getCenterAzimuth() { return centerAzimuth; }
+    double getCenterAltitude() { return centerAltitude; }
+    double getAltitude() { return -pitch; }
 
     Orientation normalize() {
         if (roll < -90 || roll > 90) {

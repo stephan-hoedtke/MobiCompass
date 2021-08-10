@@ -3,6 +3,7 @@ package com.stho.mobicompass;
 import android.animation.Animator;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,15 @@ import com.stho.mobicompass.databinding.MainFragmentBinding;
 
 public class MainFragment extends Fragment {
 
-    private final Handler handler = new Handler();
     private MainViewModel viewModel;
     private MainFragmentBinding binding;
-    private OrientationSensorListener.IOrientationFilter filter;
     private OrientationSensorListener sensorListener ;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = MainViewModel.build(this);
-        filter = new OrientationAccelerationFilter();
-        sensorListener = new OrientationSensorListener(requireContext(), filter);
+        sensorListener = new OrientationSensorListener(requireContext(), viewModel.getOrientationFilter());
     }
 
     @Nullable
@@ -53,32 +51,18 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         sensorListener.onResume();
-        initializeHandler();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         sensorListener.onPause();
-        removeHandler();
     }
 
-    private static final int HANDLER_DELAY = 100;
-
-    private void initializeHandler() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Orientation orientation = filter.getCurrentOrientation();
-                viewModel.updateNorthPointer(orientation);
-                handler.postDelayed(this, HANDLER_DELAY);
-            }
-        }, HANDLER_DELAY);
-    }
-
-    private void removeHandler() {
-        handler.removeCallbacksAndMessages(null);
-    }
+    private static final int FADE_IN_DELAY = 10;
+    private static final int FADE_IN_DURATION = 500;
+    private static final int FADE_OUT_DELAY = 300;
+    private static final int FADE_OUT_DURATION = 500;
 
     private void observeRingAngle(float angle) {
         binding.compassRing.setRotation(-angle);
@@ -94,9 +78,9 @@ public class MainFragment extends Fragment {
 
     private void observeManualMode(boolean manualMode) {
         if (manualMode) {
-            handler.postDelayed(this::fadeInAutoIcon, 10);
+            new Handler(Looper.getMainLooper()).postDelayed(this::fadeInAutoIcon, FADE_IN_DELAY);
         } else {
-            handler.postDelayed(this::fadeOutAutoIcon, 300);
+            new Handler(Looper.getMainLooper()).postDelayed(this::fadeOutAutoIcon, FADE_OUT_DELAY);
         }
     }
 
@@ -104,7 +88,7 @@ public class MainFragment extends Fragment {
         binding.buttonManualMode.setVisibility(View.VISIBLE);
         binding.buttonManualMode.animate()
                 .alpha(1f)
-                .setDuration(500)
+                .setDuration(FADE_IN_DURATION)
                 .setListener(null);
     }
 
@@ -112,7 +96,7 @@ public class MainFragment extends Fragment {
         binding.buttonManualMode.setVisibility(View.VISIBLE);
         binding.buttonManualMode.animate()
                 .alpha(0f)
-                .setDuration(500)
+                .setDuration(FADE_OUT_DURATION)
                 .setListener(new OnAnimationEndListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {

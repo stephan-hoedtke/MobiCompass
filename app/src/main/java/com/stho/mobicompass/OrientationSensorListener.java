@@ -13,9 +13,8 @@ public class OrientationSensorListener implements SensorEventListener {
 
     interface IOrientationFilter {
         void onOrientationAnglesChanged(Quaternion orientation);
-        Orientation getCurrentOrientation();
-
     }
+
     private final IOrientationFilter filter;
     private final SensorManager sensorManager;
     private final WindowManager windowManager;
@@ -221,8 +220,8 @@ public class OrientationSensorListener implements SensorEventListener {
     }
 
     private static final double EPS = 0.0000001;
-    private static final double LAMBDA1 = 0.005;
-    private static final double LAMBDA2 = 0.035;
+    private static final double LAMBDA1 = 0.01;
+    private static final double LAMBDA2 = 0.1;
 
     /**
      * Returns the magnetic field in earth frame after distortion correction
