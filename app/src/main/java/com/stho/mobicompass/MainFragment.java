@@ -32,8 +32,8 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
-        binding.compassRing.setOnRotateListener(delta -> viewModel.rotateRing(delta));
-        binding.compassRing.setOnDoubleTapListener(() -> viewModel.reset());
+        binding.compass.setOnRotateListener(delta -> viewModel.rotateRing(delta));
+        binding.compass.setOnDoubleTapListener(() -> viewModel.reset());
         binding.buttonManualMode.setOnClickListener(view -> viewModel.toggleManualMode());
         return binding.getRoot();
     }
@@ -65,11 +65,11 @@ public class MainFragment extends Fragment {
     private static final int FADE_OUT_DURATION = 500;
 
     private void observeRingAngle(float angle) {
-        binding.compassRing.setRotation(-angle);
+        binding.compass.setRingAngle(-angle);
     }
 
     private void observeNorthPointer(float angle) {
-        binding.compassNorthPointer.setRotation(-angle);
+        binding.compass.setNorthPointerAngle(-angle);
     }
 
     private void observeDirection(String direction) {
