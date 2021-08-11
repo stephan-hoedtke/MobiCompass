@@ -6,8 +6,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -39,13 +42,10 @@ public class CompassView extends View {
     private double northPointerAngle = 15.0;
     private double ringAngle = 30.0;
     private Bitmap ring = null;
-    private Bitmap pointer = null;
     private Bitmap background = null;
+    private Bitmap northPointer = null;
     private GestureDetector gestureDetector = null;
     private Matrix matrix = null;
-    Bitmap tempCanvasBitmap;
-    Canvas tempCanvas;
-    Paint paint;
 
     public CompassView(Context context) {
         super(context);
@@ -127,41 +127,37 @@ public class CompassView extends View {
             onCreate(getContext());
         }
 
-        float w = getWidth();
-        float h = getHeight();
+        /*
+            Mind, all three bitmaps:
+             - background,
+             - ring,
+             - northPointer
+            are of the same size in pixels: size x size (originally and after scaling)
+         */
 
-        float dx = Math.round(0.5 * (getWidth() - background.getHeight()));
-        float dy = Math.round(0.5 * (getHeight() - background.getHeight()));
+        float px = getWidth() >> 1;
+        float py = getHeight() >> 1;
+        float dx = Math.round(px - (background.getHeight() >> 1));
+        float dy = Math.round(py - (background.getHeight() >> 1));
 
-        matrix.reset();
-        matrix.postTranslate(dx, dy);
-        tempCanvas.drawBitmap(background, matrix, null);
+        matrix.setTranslate(dx, dy);
+        matrix.postRotate((float)ringAngle, px, py);
+        canvas.drawBitmap(ring, matrix, null);
 
-        matrix.reset();
-        matrix.postTranslate(dx, dy);
-        matrix.postRotate((float)ringAngle, w / 2, h / 2);
-        tempCanvas.drawBitmap(ring, matrix, null);
+        matrix.setTranslate(dx, dy);
+        canvas.drawBitmap(background, matrix, null);
 
-        matrix.reset();
-        matrix.postTranslate(dx, dy);
-        matrix.postRotate((float)northPointerAngle, w / 2, h / 2);
-        tempCanvas.drawBitmap(pointer, matrix, null);
-
-        canvas.drawBitmap(tempCanvasBitmap, 0, 0, paint);
+        matrix.setTranslate(dx, dy);
+        matrix.postRotate((float)northPointerAngle, px, py);
+        canvas.drawBitmap(northPointer, matrix, null);
     }
 
     private void onCreate(Context context) {
         int size = Math.min(getWidth(), getHeight());
         ring = createBitmap(context, R.drawable.magnetic_compass_ring, size);
         background = createBitmap(context, R.drawable.magnetic_compass_background, size);
-        pointer = createBitmap(context, R.drawable.magnetic_compass_pointer, size);
+        northPointer = createBitmap(context, R.drawable.magnetic_compass_pointer, size);
         matrix = new Matrix();
-
-        tempCanvasBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        tempCanvas = new Canvas();
-        tempCanvas.setBitmap(tempCanvasBitmap);
-
-        paint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
     }
 
