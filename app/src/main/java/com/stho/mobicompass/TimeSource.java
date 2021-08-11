@@ -2,13 +2,9 @@ package com.stho.mobicompass;
 
 import android.os.SystemClock;
 
-interface TimeSource {
-    double getElapsedRealtimeSeconds();
-}
 
-class SystemClockTimeSource implements TimeSource {
+public class TimeSource {
 
-    @Override
     public double getElapsedRealtimeSeconds() {
         return SECONDS_PER_NANOSECOND * SystemClock.elapsedRealtimeNanos();
     }

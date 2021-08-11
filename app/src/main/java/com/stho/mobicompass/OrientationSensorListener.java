@@ -1,6 +1,7 @@
 package com.stho.mobicompass;
 
 import android.content.Context;
+
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -172,7 +173,6 @@ public class OrientationSensorListener implements SensorEventListener {
 
         // Get updated Gyro delta rotation from gyroscope readings
         Quaternion deltaRotation = Rotation.getRotationFromGyroFSCF(omega, dt);
-
         Quaternion prediction = estimate.times(deltaRotation);
         RotationMatrix matrix = prediction.toRotationMatrix();
 

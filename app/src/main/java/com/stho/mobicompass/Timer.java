@@ -2,7 +2,7 @@ package com.stho.mobicompass;
 
 @SuppressWarnings("unused")
 public class Timer {
-    private final SystemClockTimeSource timeSource = new SystemClockTimeSource();
+    private final TimeSource timeSource = new TimeSource();
     private double startTime = timeSource.getElapsedRealtimeSeconds();
 
     /**
