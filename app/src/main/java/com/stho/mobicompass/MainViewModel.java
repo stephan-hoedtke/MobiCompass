@@ -24,7 +24,7 @@ public class MainViewModel extends AndroidViewModel {
         manualModeLiveData.setValue(false);
         mediator.addSource(orientationFilter.getOrientationLD(),
                 orientation -> {
-                    float value = (float) orientation.getAzimuth();
+                    float value = getNorthPointerPositionFromOrientation(orientation);
                     mediator.setValue(value);
                     if (isAutomaticMode()) {
                         ringAngleLiveData.setValue(value);
@@ -71,6 +71,17 @@ public class MainViewModel extends AndroidViewModel {
 
     private static boolean assureValueOrAssumeTrue(Boolean value) {
         return (value != null) && value;
+    }
+
+    private static float getNorthPointerPositionFromOrientation(Orientation orientation) {
+        double azimuth = orientation.getAzimuth();
+        double roll = orientation.getRoll();
+        if (-90 <= roll && roll <= 90) {
+            return (float)azimuth;
+        }
+        else {
+            return - (float)azimuth;
+        }
     }
 
 }
