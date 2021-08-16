@@ -34,6 +34,7 @@ public class CompassView extends View {
     private double previousAngle = 0;
     private double northPointerAngle = 15.0;
     private double ringAngle = 30.0;
+    private boolean mirror = false;
     private Bitmap ring = null;
     private Bitmap background = null;
     private Bitmap northPointer = null;
@@ -88,6 +89,11 @@ public class CompassView extends View {
         invalidate();
     }
 
+    public void setMirror(boolean newMirror) {
+        mirror = newMirror;
+        invalidate();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -107,7 +113,11 @@ public class CompassView extends View {
                 final double alpha = getAngle(event.getX(), event.getY());
                 final double delta = ensureAngleInRange(alpha - previousAngle);
                 previousAngle = alpha;
-                onRotate(delta);
+                if (mirror) {
+                    onRotate(-delta);
+                } else {
+                    onRotate(delta);
+                }
                 break;
         }
     }
@@ -134,7 +144,10 @@ public class CompassView extends View {
         float dy = Math.round(py - (background.getHeight() >> 1));
 
         matrix.setTranslate(dx, dy);
-        matrix.postRotate((float)ringAngle, px, py);
+        matrix.postRotate((float) ringAngle, px, py);
+        if (mirror) {
+            matrix.postScale(-1f, 1f, px, py);
+        }
         canvas.drawBitmap(ring, matrix, null);
 
         matrix.setTranslate(dx, dy);
@@ -142,6 +155,9 @@ public class CompassView extends View {
 
         matrix.setTranslate(dx, dy);
         matrix.postRotate((float)northPointerAngle, px, py);
+        if (mirror) {
+            matrix.postScale(-1f, 1f, px, py);
+        }
         canvas.drawBitmap(northPointer, matrix, null);
     }
 

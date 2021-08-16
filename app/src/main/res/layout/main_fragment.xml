@@ -44,6 +44,15 @@
 
         </FrameLayout>
 
+        <ImageView
+            android:layout_width="@dimen/target_size"
+            android:layout_height="@dimen/target_size"
+            android:src="@drawable/target"
+            android:contentDescription="@string/label_target"
+            app:layout_constraintTop_toTopOf="@id/horizontal_guideline1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <TextView
             android:id="@+id/headline"
             android:layout_width="match_parent"
@@ -70,6 +79,22 @@
             android:src="@drawable/auto"
             android:contentDescription="@string/label_toggle_manual_mode"
             />
+
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="@dimen/button_size"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/narrow_margin"
+            android:text="@string/label_question"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline1"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:textColor="@color/colorQuestion"
+            android:textAlignment="center"
+            android:textSize="20sp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

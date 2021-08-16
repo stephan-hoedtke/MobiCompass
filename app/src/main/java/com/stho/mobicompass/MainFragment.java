@@ -1,18 +1,23 @@
 package com.stho.mobicompass;
 
 import android.animation.Animator;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.stho.mobicompass.databinding.MainFragmentBinding;
 
 public class MainFragment extends Fragment {
@@ -24,7 +29,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = MainViewModel.build(this);
+        viewModel = MainViewModel.build(requireActivity());
         sensorListener = new OrientationSensorListener(requireContext(), viewModel.getOrientationFilter());
     }
 
@@ -33,8 +38,9 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
         binding.compass.setOnRotateListener(delta -> viewModel.rotateRing(delta));
-        binding.compass.setOnDoubleTapListener(() -> viewModel.reset());
+        binding.compass.setOnDoubleTapListener(() -> viewModel.fix());
         binding.buttonManualMode.setOnClickListener(view -> viewModel.toggleManualMode());
+        binding.question.setOnClickListener(view -> displayAnswers());
         return binding.getRoot();
     }
 
@@ -45,6 +51,7 @@ public class MainFragment extends Fragment {
         viewModel.getNorthPointerPositionLD().observe(getViewLifecycleOwner(), this::observeNorthPointer);
         viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
         viewModel.getManualModeLD().observe(getViewLifecycleOwner(), this::observeManualMode);
+        viewModel.getLookAtPhoneFromAboveLD().observe(getViewLifecycleOwner(), this::getLookAtPhoneFromAboveLD);
     }
 
     @Override
@@ -84,6 +91,10 @@ public class MainFragment extends Fragment {
         }
     }
 
+    private void getLookAtPhoneFromAboveLD(boolean lookAtPhoneFromAbove) {
+        binding.compass.setMirror(!lookAtPhoneFromAbove);
+    }
+
     private void fadeInAutoIcon() {
         binding.buttonManualMode.setVisibility(View.VISIBLE);
         binding.buttonManualMode.animate()
@@ -103,6 +114,26 @@ public class MainFragment extends Fragment {
                         binding.buttonManualMode.setVisibility(View.INVISIBLE);
                     }
                 });
+    }
+
+    private void displayAnswers() {
+        Snackbar snackbar = Snackbar.make(requireContext(), requireView(), "Press Camera to fix the position ...", 8000);
+        snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAnswerText));
+        snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorAnswerBackground));
+        snackbar.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryTextAccent));
+        Boolean value = viewModel.getManualModeLD().getValue();
+        CharSequence text = getText((value == null || value) ? R.string.label_manual_mode : R.string.label_automatic_mode);
+        snackbar.setText(text);
+        snackbar.setAction("Close", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        View snackbarView = snackbar.getView();
+        TextView tv= (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        tv.setMaxLines(7);
+        snackbar.show();
     }
 }
 

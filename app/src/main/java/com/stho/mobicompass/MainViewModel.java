@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -15,32 +16,40 @@ public class MainViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Float> ringAngleLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> manualModeLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> lookAtPhoneFromAboveLiveData = new MutableLiveData<Boolean>();
     private final OrientationFilter orientationFilter = new OrientationFilter();
-    private final MediatorLiveData<Float> mediator = new MediatorLiveData<>();
+    private final MediatorLiveData<Float> northPointerAngleMediatorLiveData = new MediatorLiveData<>();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
         ringAngleLiveData.setValue(0f);
         manualModeLiveData.setValue(false);
-        mediator.addSource(orientationFilter.getOrientationLD(),
+        lookAtPhoneFromAboveLiveData.setValue(true);
+        northPointerAngleMediatorLiveData.addSource(orientationFilter.getOrientationLD(),
                 orientation -> {
-                    float value = getNorthPointerPositionFromOrientation(orientation);
-                    mediator.setValue(value);
+                    float northPointerAngle = getNorthPointerPositionFromOrientation(orientation);
+                    boolean lookAtThePhoneFromAbove = lookAtPhoneFromAboveFromOrientation(orientation);
+                    setNorthPointerAngle(northPointerAngle);
+                    setLookAtPhoneFromAbove(lookAtThePhoneFromAbove);
                     if (isAutomaticMode()) {
-                        ringAngleLiveData.setValue(value);
+                        setRingAngle(northPointerAngle);
                     }
                 });
     }
 
-    static MainViewModel build(@NonNull Fragment fragment) {
-        return new ViewModelProvider(fragment.requireActivity()).get(MainViewModel.class);
+    static MainViewModel build(@NonNull FragmentActivity activity) {
+        return new ViewModelProvider(activity).get(MainViewModel.class);
     }
 
-    LiveData<Float> getNorthPointerPositionLD() { return mediator; }
+    LiveData<Float> getNorthPointerPositionLD() { return northPointerAngleMediatorLiveData; }
     LiveData<Float> getRingAngleLD() { return ringAngleLiveData; }
     LiveData<Boolean> getManualModeLD() { return manualModeLiveData; }
-    LiveData<String> getDirectionNameLD() { return Transformations.map(getRingAngleLD(), Direction::getName); }
+    LiveData<Boolean> getLookAtPhoneFromAboveLD() { return lookAtPhoneFromAboveLiveData; }
     OrientationFilter getOrientationFilter() { return orientationFilter; }
+
+    LiveData<String> getDirectionNameLD() {
+        return Transformations.map(ringAngleLiveData, Direction::getName);
+    }
 
     /**
      * Synchronous, call from UI thread only
@@ -52,13 +61,35 @@ public class MainViewModel extends AndroidViewModel {
         ringAngleLiveData.setValue((float)degree);
     }
 
-    void reset() {
-        manualModeLiveData.setValue(true);
-        ringAngleLiveData.setValue(0f);
-    }
-
     void toggleManualMode() {
         manualModeLiveData.setValue(isAutomaticMode());
+    }
+
+    void fix() {
+        Float angle = northPointerAngleMediatorLiveData.getValue();
+        manualModeLiveData.setValue(true);
+        ringAngleLiveData.setValue(angle);
+    }
+
+    private void setNorthPointerAngle(float newValue) {
+        Float value = northPointerAngleMediatorLiveData.getValue();
+        if (value == null || value != newValue) {
+            northPointerAngleMediatorLiveData.setValue(newValue);
+        }
+    }
+
+    private void setLookAtPhoneFromAbove(boolean newValue) {
+        Boolean value = lookAtPhoneFromAboveLiveData.getValue();
+        if (value == null || value != newValue) {
+            lookAtPhoneFromAboveLiveData.setValue(newValue);
+        }
+    }
+
+    private void setRingAngle(float newValue) {
+        Float value = ringAngleLiveData.getValue();
+        if (value == null || value != newValue) {
+            ringAngleLiveData.setValue(newValue);
+        }
     }
 
     private boolean isAutomaticMode() {
@@ -74,15 +105,12 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private static float getNorthPointerPositionFromOrientation(Orientation orientation) {
-        double azimuth = orientation.getAzimuth();
-        double roll = orientation.getRoll();
-        if (-90 <= roll && roll <= 90) {
-            return (float)azimuth;
-        }
-        else {
-            return - (float)azimuth;
-        }
+        return (float)orientation.getAzimuth();
     }
 
+    private static boolean lookAtPhoneFromAboveFromOrientation(Orientation orientation) {
+        double roll = orientation.getRoll();
+        return -90 <= roll && roll <= 90;
+    }
 }
 
