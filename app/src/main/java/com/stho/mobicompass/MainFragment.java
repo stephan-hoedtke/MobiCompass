@@ -1,30 +1,24 @@
 package com.stho.mobicompass;
 
-import android.animation.Animator;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.stho.mobicompass.databinding.MainFragmentBinding;
 
 public class MainFragment extends Fragment {
 
     private MainViewModel viewModel;
     private MainFragmentBinding binding;
-    private OrientationSensorListener sensorListener ;
+    private OrientationSensorListener sensorListener;
+    private ButtonAnimation buttonAnimation;
+    private HintsAnimation hintsAnimation;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +34,8 @@ public class MainFragment extends Fragment {
         binding.compass.setOnRotateListener(delta -> viewModel.rotateRing(delta));
         binding.compass.setOnDoubleTapListener(() -> viewModel.fix());
         binding.buttonManualMode.setOnClickListener(view -> viewModel.toggleManualMode());
-        binding.question.setOnClickListener(view -> displayAnswers());
+        binding.buttonShowHints.setOnClickListener(view -> displayHints());
+        binding.buttonDismissHints.setOnClickListener(view -> dismissHints());
         return binding.getRoot();
     }
 
@@ -52,24 +47,24 @@ public class MainFragment extends Fragment {
         viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
         viewModel.getManualModeLD().observe(getViewLifecycleOwner(), this::observeManualMode);
         viewModel.getLookAtPhoneFromAboveLD().observe(getViewLifecycleOwner(), this::getLookAtPhoneFromAboveLD);
+        buttonAnimation = ButtonAnimation.build(binding.buttonManualMode);
+        hintsAnimation = HintsAnimation.build(binding.hintsFrame);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         sensorListener.onResume();
+        hintsAnimation.hide();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         sensorListener.onPause();
+        hintsAnimation.cleanup();
+        buttonAnimation.cleanup();
     }
-
-    private static final int FADE_IN_DELAY = 10;
-    private static final int FADE_IN_DURATION = 500;
-    private static final int FADE_OUT_DELAY = 300;
-    private static final int FADE_OUT_DURATION = 500;
 
     private void observeRingAngle(float angle) {
         binding.compass.setRingAngle(-angle);
@@ -85,9 +80,9 @@ public class MainFragment extends Fragment {
 
     private void observeManualMode(boolean manualMode) {
         if (manualMode) {
-            new Handler(Looper.getMainLooper()).postDelayed(this::fadeInAutoIcon, FADE_IN_DELAY);
+            buttonAnimation.show();
         } else {
-            new Handler(Looper.getMainLooper()).postDelayed(this::fadeOutAutoIcon, FADE_OUT_DELAY);
+            buttonAnimation.dismiss();
         }
     }
 
@@ -95,46 +90,19 @@ public class MainFragment extends Fragment {
         binding.compass.setMirror(!lookAtPhoneFromAbove);
     }
 
-    private void fadeInAutoIcon() {
-        binding.buttonManualMode.setVisibility(View.VISIBLE);
-        binding.buttonManualMode.animate()
-                .alpha(1f)
-                .setDuration(FADE_IN_DURATION)
-                .setListener(null);
+    private void displayHints() {
+        CharSequence hints = getText(viewModel.isManual() ? R.string.label_hints_manual_mode : R.string.label_hints_automatic_mode);
+        binding.hints.setText(hints);
+        hintsAnimation.show();
     }
 
-    private void fadeOutAutoIcon() {
-        binding.buttonManualMode.setVisibility(View.VISIBLE);
-        binding.buttonManualMode.animate()
-                .alpha(0f)
-                .setDuration(FADE_OUT_DURATION)
-                .setListener(new OnAnimationEndListener() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        binding.buttonManualMode.setVisibility(View.INVISIBLE);
-                    }
-                });
+    private void dismissHints() {
+        hintsAnimation.dismiss();
     }
 
-    private void displayAnswers() {
-        Snackbar snackbar = Snackbar.make(requireContext(), requireView(), "Press Camera to fix the position ...", 8000);
-        snackbar.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAnswerText));
-        snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorAnswerBackground));
-        snackbar.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryTextAccent));
-        Boolean value = viewModel.getManualModeLD().getValue();
-        CharSequence text = getText((value == null || value) ? R.string.label_manual_mode : R.string.label_automatic_mode);
-        snackbar.setText(text);
-        snackbar.setAction("Close", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        View snackbarView = snackbar.getView();
-        TextView tv= (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
-        tv.setMaxLines(7);
-        snackbar.show();
-    }
+    private static final int SNACKBAR_DURATION = 13000;
+
+
 }
 
 

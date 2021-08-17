@@ -81,7 +81,7 @@
             />
 
         <TextView
-            android:id="@+id/question"
+            android:id="@+id/button_show_hints"
             android:layout_width="@dimen/button_size"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/narrow_margin"
@@ -95,6 +95,45 @@
             android:textColor="@color/colorQuestion"
             android:textAlignment="center"
             android:textSize="20sp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/hintsFrame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/horizontal_guideline1"
+            android:alpha="0.5"
+            android:background="@color/colorHintsBackground">
+
+            <TextView
+                android:id="@+id/hints"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_margin="@dimen/narrow_margin"
+                android:textAlignment="center"
+                android:textColor="@color/colorHintsText"
+                android:text="@string/label_default_hints" />
+
+            <TextView
+                android:id="@+id/button_dismiss_hints"
+                android:layout_width="@dimen/button_size"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="@dimen/narrow_margin"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:textColor="@color/colorHintsButton"
+                android:text="@string/label_dismiss"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

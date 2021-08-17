@@ -65,6 +65,11 @@ public class MainViewModel extends AndroidViewModel {
         manualModeLiveData.setValue(isAutomaticMode());
     }
 
+    boolean isManual() {
+        Boolean value = getManualModeLD().getValue();
+        return value == null || value;
+    }
+
     void fix() {
         Float angle = northPointerAngleMediatorLiveData.getValue();
         manualModeLiveData.setValue(true);
