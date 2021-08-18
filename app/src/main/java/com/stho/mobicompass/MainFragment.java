@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -33,7 +32,7 @@ public class MainFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
         binding.compass.setOnRotateListener(delta -> viewModel.rotateRing(delta));
         binding.compass.setOnDoubleTapListener(() -> viewModel.fix());
-        binding.buttonManualMode.setOnClickListener(view -> viewModel.toggleManualMode());
+        binding.buttonAutomaticMode.setOnClickListener(view -> viewModel.setAutomaticMode());
         binding.buttonShowHints.setOnClickListener(view -> displayHints());
         binding.buttonDismissHints.setOnClickListener(view -> dismissHints());
         return binding.getRoot();
@@ -47,7 +46,7 @@ public class MainFragment extends Fragment {
         viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
         viewModel.getManualModeLD().observe(getViewLifecycleOwner(), this::observeManualMode);
         viewModel.getLookAtPhoneFromAboveLD().observe(getViewLifecycleOwner(), this::getLookAtPhoneFromAboveLD);
-        buttonAnimation = ButtonAnimation.build(binding.buttonManualMode);
+        buttonAnimation = ButtonAnimation.build(binding.buttonAutomaticMode);
         hintsAnimation = HintsAnimation.build(binding.hintsFrame);
     }
 
@@ -55,7 +54,6 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         sensorListener.onResume();
-        hintsAnimation.hide();
     }
 
     @Override
@@ -91,18 +89,22 @@ public class MainFragment extends Fragment {
     }
 
     private void displayHints() {
-        CharSequence hints = getText(viewModel.isManual() ? R.string.label_hints_manual_mode : R.string.label_hints_automatic_mode);
-        binding.hints.setText(hints);
+        binding.hintsHeader.setText(getHintsHeader());
+        binding.hints.setText(getHints());
         hintsAnimation.show();
+    }
+
+    private CharSequence getHintsHeader() {
+        return getText(viewModel.isManual() ? R.string.label_manual_mode : R.string.label_automatic_mode);
+    }
+
+    private CharSequence getHints() {
+        return getText(viewModel.isManual() ? R.string.label_hints_manual_mode : R.string.label_hints_automatic_mode);
     }
 
     private void dismissHints() {
         hintsAnimation.dismiss();
     }
-
-    private static final int SNACKBAR_DURATION = 13000;
-
-
 }
 
 

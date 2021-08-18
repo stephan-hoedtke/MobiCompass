@@ -4,8 +4,9 @@
     <string name="label_toggle_manual_mode">toggle manual mode</string>
     <string name="label_target">Target</string>
     <string name="label_question">\?</string>
-    <string name="label_default_hints">Hints, hints, hints…\n\nhints\nhints\nhints</string>
-    <string name="label_hints_manual_mode">MANUAL MODE\n\nSwitch back to automatic mode by\n - pressing the AUTO button</string>
-    <string name="label_hints_automatic_mode">AUTOMATIC MODE\n\nSwitch to manual mode by\n - pressing the camera button or\n - double tapping or swiping the ring</string>
+    <string name="label_manual_mode">Manual Mode</string>
+    <string name="label_automatic_mode">Automatic Mode</string>
+    <string name="label_hints_manual_mode">Press the AUTO button\n\n… to switch back to automatic mode.\n</string>
+    <string name="label_hints_automatic_mode">Press the camera button or\nDouble tap or swipe the compass ring\n\n… to switch to manual mode.\n</string>
     <string name="label_dismiss">x</string>
 </resources>

@@ -3,7 +3,6 @@ package com.stho.mobicompass;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -16,7 +15,7 @@ public class MainViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Float> ringAngleLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> manualModeLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> lookAtPhoneFromAboveLiveData = new MutableLiveData<Boolean>();
+    private final MutableLiveData<Boolean> lookAtPhoneFromAboveLiveData = new MutableLiveData<>();
     private final OrientationFilter orientationFilter = new OrientationFilter();
     private final MediatorLiveData<Float> northPointerAngleMediatorLiveData = new MediatorLiveData<>();
 
@@ -61,8 +60,8 @@ public class MainViewModel extends AndroidViewModel {
         ringAngleLiveData.setValue((float)degree);
     }
 
-    void toggleManualMode() {
-        manualModeLiveData.setValue(isAutomaticMode());
+    void setAutomaticMode() {
+        manualModeLiveData.setValue(false);
     }
 
     boolean isManual() {

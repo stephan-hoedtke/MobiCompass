@@ -35,6 +35,7 @@ package com.stho.mobicompass;
  *
  * Altitude (top edge of the device pointing upwards) is the opposite of pitch (top edge of the device pointing downwards)
  */
+@SuppressWarnings("unused")
 class Orientation {
     private final double azimuth;
     private final double pitch;

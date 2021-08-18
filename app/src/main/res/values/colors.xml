@@ -7,8 +7,7 @@
     <color name="colorPrimaryTextAccent">#e0cbcb</color>
     <color name="colorQuestion">#707070</color>
     <color name="colorHintsText">#E0E0E0</color>
-    <color name="colorHintsBackground">#303030</color>
-    <color name="colorHintsButton">#e0cbcb</color>
+    <color name="colorHintsBackground">#400400</color>
     <color name="colorBackground">#000000</color>
 </resources>
 

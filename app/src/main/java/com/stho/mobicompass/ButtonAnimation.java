@@ -38,11 +38,12 @@ public class ButtonAnimation {
     }
 
     private void fadeIn() {
-        view.setAlpha(0f);
         view.setVisibility(View.VISIBLE);
         view.animate()
                 .alpha(1f)
-                .setDuration(FADE_IN_DURATION);
+                .setDuration(FADE_IN_DURATION)
+                .setListener(null);
+
     }
 
     private void fadeOut() {

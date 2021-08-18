@@ -39,9 +39,10 @@ public class HintsAnimation {
     }
 
     private void fadeIn() {
-        view.setVisibility(View.VISIBLE);
+        int dy = view.getHeight();
         view.setAlpha(0f);
-        view.setTranslationY(-100f);
+        view.setVisibility(View.VISIBLE);
+        view.setTranslationY(dy);
         view.animate()
                 .alpha(1f)
                 .translationY(0f)
