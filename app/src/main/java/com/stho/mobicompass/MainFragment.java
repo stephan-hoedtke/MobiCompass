@@ -29,7 +29,7 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false);
+        binding = MainFragmentBinding.inflate(inflater, container, false);
         binding.compass.setOnRotateListener(delta -> viewModel.rotateRing(delta));
         binding.compass.setOnDoubleTapListener(() -> viewModel.fix());
         binding.buttonAutomaticMode.setOnClickListener(view -> viewModel.setAutomaticMode());
