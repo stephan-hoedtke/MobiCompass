@@ -6,8 +6,8 @@
     <color name="colorPrimaryText">#dbdbdb</color>
     <color name="colorPrimaryTextAccent">#e0cbcb</color>
     <color name="colorQuestion">#707070</color>
-    <color name="colorHintsText">#E0E0E0</color>
-    <color name="colorHintsBackground">#400400</color>
+    <color name="colorHintsText">#dbdbdb</color>
+    <color name="colorHintsBackground">#2B0000</color>
     <color name="colorBackground">#000000</color>
 </resources>
 
