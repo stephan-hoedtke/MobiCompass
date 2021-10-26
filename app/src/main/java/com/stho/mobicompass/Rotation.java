@@ -89,20 +89,6 @@ public class Rotation {
     }
 
 
-    /**
-     * The rotation is not exactly the same, but similar to the "default approach":
-     *      theta = ||omega|| * dt
-     *      Q = Q(s = cos(theta/2), v = sin(theta2) * |omega|)
-     *
-     * @param omega angle velocity around x, y, z, in radians/second
-     * @param dt time period in seconds
-     */
-    public static Quaternion getRotationFromGyroFSCF(Vector omega, double dt) {
-        double alpha = omega.x * dt;
-        double beta = omega.y * dt;
-        double gamma = omega.z * dt;
-        return new Quaternion(alpha / 2, beta / 2, gamma / 2, 1.0);
-    }
 
     /**
      * Returns if sin(x) is about +/- 1.0

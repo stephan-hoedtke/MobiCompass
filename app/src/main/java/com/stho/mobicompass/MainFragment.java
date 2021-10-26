@@ -1,13 +1,17 @@
 package com.stho.mobicompass;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.stho.mobicompass.databinding.MainFragmentBinding;
 
@@ -18,6 +22,7 @@ public class MainFragment extends Fragment {
     private OrientationSensorListener sensorListener;
     private ButtonAnimation buttonAnimation;
     private HintsAnimation hintsAnimation;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +40,7 @@ public class MainFragment extends Fragment {
         binding.buttonAutomaticMode.setOnClickListener(view -> viewModel.setAutomaticMode());
         binding.buttonShowHints.setOnClickListener(view -> displayHints());
         binding.buttonDismissHints.setOnClickListener(view -> dismissHints());
+        binding.buttonSettings.setOnClickListener(view -> onSettings());
         return binding.getRoot();
     }
 
@@ -46,6 +52,7 @@ public class MainFragment extends Fragment {
         viewModel.getDirectionNameLD().observe(getViewLifecycleOwner(), this::observeDirection);
         viewModel.getManualModeLD().observe(getViewLifecycleOwner(), this::observeManualMode);
         viewModel.getLookAtPhoneFromAboveLD().observe(getViewLifecycleOwner(), this::getLookAtPhoneFromAboveLD);
+        viewModel.getSettingsLD().observe(getViewLifecycleOwner(), this::onObserverSettings);
         buttonAnimation = ButtonAnimation.build(binding.buttonAutomaticMode);
         hintsAnimation = HintsAnimation.build(binding.hintsFrame);
     }
@@ -62,6 +69,7 @@ public class MainFragment extends Fragment {
         sensorListener.onPause();
         hintsAnimation.cleanup();
         buttonAnimation.cleanup();
+        disableListener();
     }
 
     private void observeRingAngle(float angle) {
@@ -99,13 +107,62 @@ public class MainFragment extends Fragment {
     }
 
     private CharSequence getHints() {
-        return getText(viewModel.isManual() ? R.string.label_hints_manual_mode : R.string.label_hints_automatic_mode);
+        return getText(viewModel.isManual() ? R.string.text_hints_manual_mode : R.string.text_hints_automatic_mode);
     }
 
     private void dismissHints() {
         hintsAnimation.dismiss();
     }
+
+    private void onSettings() {
+        NavController navController = Navigation.findNavController(binding.getRoot());
+        NavDirections directions = MainFragmentDirections.actionMainFragmentToSettingsFragment();
+        navController.navigate(directions);
+    }
+
+    private void onObserverSettings(Settings settings) {
+        binding.magnetometer.setVisibility(settings.showMagnetometer ? View.VISIBLE : View.INVISIBLE);
+        binding.accelerometer.setVisibility(settings.showAccelerometer ? View.VISIBLE : View.INVISIBLE);
+        if (settings.showMagnetometer || settings.showAccelerometer) {
+            enableListener();
+        } else {
+            disableListener();
+        }
+    }
+
+    private void enableListener() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (viewModel.getSettings().showAccelerometer) {
+                    float[] accelerometer = sensorListener.getAccelerometer();
+                    if (Math.abs(accelerometer[2]) > 0.001) {
+                        double alpha = Degree.arcTan2(accelerometer[0], accelerometer[2]);
+                        double beta = Degree.arcTan2(accelerometer[1], accelerometer[2]);
+                        binding.accelerometer.setTranslationX(10f * (float)alpha);
+                        binding.accelerometer.setTranslationY(10f * (float)beta);
+                    }
+                }
+                if (viewModel.getSettings().showMagnetometer) {
+                    float[] magnetometer = sensorListener.getMagnetometer();
+                    if (Math.abs(magnetometer[0]) > 0.001 || Math.abs(magnetometer[1]) > 0.001) {
+                        double alpha = Degree.arcTan2(magnetometer[0], magnetometer[1]);
+                        binding.magnetometer.setRotation((float) alpha);
+                    }
+                }
+
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
+    }
+
+    private void disableListener() {
+        binding.magnetometer.setVisibility(View.INVISIBLE);
+        binding.accelerometer.setVisibility(View.INVISIBLE);
+        handler.removeCallbacksAndMessages(null);
+    }
 }
+
 
 
 

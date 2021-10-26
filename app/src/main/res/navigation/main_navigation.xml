@@ -10,6 +10,16 @@
         android:name="com.stho.mobicompass.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_main_fragment_to_settings_fragment"
+            app:destination="@id/settings_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.stho.mobicompass.SettingsFragment"
+        android:label="@string/label_settings"
+        tools:layout="@layout/settings_fragment">
     </fragment>
 
 </navigation>

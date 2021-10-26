@@ -11,11 +11,15 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Objects;
+import java.util.Set;
+
 public class MainViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Float> ringAngleLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> manualModeLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> lookAtPhoneFromAboveLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Settings> settingsLiveData = new MutableLiveData<>();
     private final OrientationFilter orientationFilter = new OrientationFilter();
     private final MediatorLiveData<Float> northPointerAngleMediatorLiveData = new MediatorLiveData<>();
 
@@ -24,6 +28,7 @@ public class MainViewModel extends AndroidViewModel {
         ringAngleLiveData.setValue(0f);
         manualModeLiveData.setValue(false);
         lookAtPhoneFromAboveLiveData.setValue(true);
+        settingsLiveData.setValue(Settings.defaultValue());
         northPointerAngleMediatorLiveData.addSource(orientationFilter.getOrientationLD(),
                 orientation -> {
                     float northPointerAngle = getNorthPointerPositionFromOrientation(orientation);
@@ -44,10 +49,29 @@ public class MainViewModel extends AndroidViewModel {
     LiveData<Float> getRingAngleLD() { return ringAngleLiveData; }
     LiveData<Boolean> getManualModeLD() { return manualModeLiveData; }
     LiveData<Boolean> getLookAtPhoneFromAboveLD() { return lookAtPhoneFromAboveLiveData; }
+    LiveData<Settings> getSettingsLD() { return settingsLiveData; }
     OrientationFilter getOrientationFilter() { return orientationFilter; }
 
     LiveData<String> getDirectionNameLD() {
         return Transformations.map(ringAngleLiveData, Direction::getName);
+    }
+
+    @NonNull Settings getSettings() {
+        return Objects.requireNonNull(settingsLiveData.getValue());
+    }
+
+    void setShowMagnetometer(boolean value) {
+        Settings settings = getSettings();
+        if (settings.showMagnetometer != value) {
+            settingsLiveData.postValue(new Settings(value, settings.showAccelerometer));
+        }
+    }
+
+    void setShowAccelerometer(boolean value) {
+        Settings settings = getSettings();
+        if (settings.showAccelerometer != value) {
+            settingsLiveData.postValue(new Settings(settings.showMagnetometer, value));
+        }
     }
 
     /**

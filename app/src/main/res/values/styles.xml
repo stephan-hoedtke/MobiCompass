@@ -1,16 +1,75 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Base application theme. -->
-    <style name="MyTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionBarTheme">@style/MyTheme.AppBarOverlay</item>
-        <item name="colorControlHighlight">@color/colorPrimaryTextAccent</item>
+    <style name="MyTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- set the attributes -->
+        <item name="myStatusBarColor">@color/colorBackground</item>
+        <item name="myToolbarColor">@color/colorBackground</item>
+        <item name="myToolbarTextColor">@color/colorPrimaryText</item>
+        <item name="myNavigationBarColor">@color/colorBackground</item>
+        <item name="myNavigationBarTextColor">@color/colorPrimaryText</item>
+        <item name="myMainColor">@color/colorBackground</item>
+        <item name="myMainTextColor">@color/colorPrimaryText</item>
+        <item name="myAlternativeColor">@color/colorHintsBackground</item>
+        <item name="myAlternativeTextColor">@color/colorHintsText</item>
+        <item name="myControlColor">@color/colorControl</item>
+        <item name="myActiveControlColor">@color/colorActiveControl</item>
+        <item name="myInactiveControlColor">@color/colorControlBackground</item>
+        <item name="myImageBackgroundColor">@color/colorBackground</item>
+        <!-- use the attributes to set the system colors -->
+        <item name="colorPrimary">?attr/myToolbarColor</item>
+        <item name="colorPrimaryVariant">?attr/myStatusBarColor</item>
+        <item name="colorOnPrimary">?attr/myToolbarTextColor</item>
+        <item name="colorSecondary">?attr/myAlternativeColor</item>
+        <item name="colorOnSecondary">?attr/myAlternativeTextColor</item>
+        <item name="colorSurface">?attr/myNavigationBarColor</item>
+        <item name="colorOnBackground">?attr/myMainTextColor</item>
+        <item name="android:background">?attr/myMainColor</item>
+        <item name="android:colorControlNormal">?attr/myControlColor</item>
+        <item name="android:colorControlActivated">?attr/myActiveControlColor</item>
+        <item name="android:colorControlHighlight">?attr/myActiveControlColor</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="switchStyle">@style/MyTheme.Switch</item>
+        <item name="radioButtonStyle">@style/MyTheme.RadioButton</item>
+
     </style>
 
-    <style name="MyTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
-     </style>
+    <style name="MyTheme.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="android:textColor">?attr/myMainTextColor</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.MyTheme.Switch</item>
+    </style>
+
+    <style name="MyTheme.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">
+        <item name="android:textColor">?attr/myMainTextColor</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.MyTheme.RadioButton</item>
+    </style>
+
+    <style name="MyTheme.NormalText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/myMainTextColor</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
+
+    <style name="MyTheme.HeaderText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/myMainTextColor</item>
+        <item name="android:textSize">@dimen/header_text_size</item>
+    </style>
+
+
+    <style name="ThemeOverlay.MyTheme.RadioButton" parent="">
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorSurface">?attr/myControlColor</item><!-- unchecked -->
+        <item name="colorOnSurface">?attr/myControlColor</item><!-- unchecked -->
+        <item name="colorSecondary">?attr/myControlColor</item><!-- checked -->
+        <item name="colorOnSecondary">@color/pink</item>
+    </style>
+
+    <style name="ThemeOverlay.MyTheme.Switch" parent="">
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorSurface">?attr/myInactiveControlColor</item><!-- unchecked: foreground -->
+        <item name="colorOnSurface">?attr/myControlColor</item><!-- unchecked: background -->
+        <item name="colorSecondary">?attr/myActiveControlColor</item><!-- checked foreground and background -->
+        <item name="colorOnSecondary">@color/pink</item>
+    </style>
 
 </resources>

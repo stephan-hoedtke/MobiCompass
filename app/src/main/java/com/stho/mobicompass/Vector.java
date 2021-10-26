@@ -22,6 +22,11 @@ public class Vector {
         return this.div(norm());
     }
 
+    public Vector normalize(double eps) {
+        double f = norm();
+        return (f > eps) ? this.div(f) : defaultValue();
+    }
+
     public double norm() {
         return Math.sqrt(normSquare());
     }

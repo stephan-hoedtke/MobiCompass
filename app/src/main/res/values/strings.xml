@@ -6,7 +6,37 @@
     <string name="label_question">\?</string>
     <string name="label_manual_mode">Manual Mode</string>
     <string name="label_automatic_mode">Automatic Mode</string>
-    <string name="label_hints_manual_mode">Press the AUTO button\n\n… to switch back to automatic mode.\n</string>
-    <string name="label_hints_automatic_mode">Press the camera button or\nDouble tap or swipe the compass ring\n\n… to switch to manual mode.\n</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_show_magnetometer">Show Magnetometer</string>
+    <string name="label_show_accelerometer">Show Accelerometer</string>
+    <string name="label_show_pdf">Display PDF</string>
+    <string name="label_settings_header">Sensor Fusion Settings</string>
     <string name="label_dismiss">x</string>
+    <string name="label_navigate_home">Home</string>
+    <string name="label_lambda1">λ1</string>
+    <string name="label_lambda2">λ2</string>
+    <string name="default_version">1.0.0</string>
+    <string name="default_lambda">0.8</string>
+    <string name="value">%.3f</string>
+    <string name="none"> </string>
+    <string name="text_hints_manual_mode">
+        Press the AUTO button \n\n
+        … to switch back to automatic mode. \n
+    </string>
+    <string name="text_hints_automatic_mode">
+        Press the camera button or \n
+        Double tap or swipe the compass ring \n\n
+        … to switch to manual mode.\n
+    </string>
+    <string name="text_settings_details">
+        Mobile Compass computes the current orientation using the three sensors:\n\n
+        1. Gyroscope \n
+        2. Magnetometer \n
+        3. Accelerometer \n\n
+        The incremental orientation changes, read from the gyroscope, are integrated over time
+        and used to update the orientation estimation.
+        However, while the gyroscope offers the best reactivity and accuracy, it suffers badly from a systematic drift. \n\n
+        Therefore, the orientation estimation is constantly corrected using the data obtained
+        from the accelerometer and the magnetometer. \n\n
+    </string>
 </resources>

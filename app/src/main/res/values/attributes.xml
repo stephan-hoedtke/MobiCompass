@@ -1,0 +1,15 @@
+<resources>
+    <attr format="color" name="myStatusBarColor" />
+    <attr format="color" name="myToolbarColor" />
+    <attr format="color" name="myToolbarTextColor" />
+    <attr format="color" name="myNavigationBarColor" />
+    <attr format="color" name="myNavigationBarTextColor" />
+    <attr format="color" name="myMainColor" />
+    <attr format="color" name="myMainTextColor" />
+    <attr format="color" name="myAlternativeColor" />
+    <attr format="color" name="myAlternativeTextColor" />
+    <attr format="color" name="myControlColor" />
+    <attr format="color" name="myActiveControlColor" />
+    <attr format="color" name="myInactiveControlColor" />
+    <attr format="color" name="myImageBackgroundColor" />s
+</resources>

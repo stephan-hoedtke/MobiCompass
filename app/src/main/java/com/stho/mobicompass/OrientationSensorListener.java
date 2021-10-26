@@ -38,7 +38,7 @@ public class OrientationSensorListener implements SensorEventListener {
     private Display display;
 
     public void onResume() {
-        // TODO: for API30 you shall user: context.display.rotation
+        // TODO: for API30 you shall use: context.display.rotation
         display = windowManager.getDefaultDisplay();
         hasAccelerometer = false;
         hasMagnetometer = false;
@@ -50,6 +50,14 @@ public class OrientationSensorListener implements SensorEventListener {
     public void onPause() {
         display = null;
         unregisterSensorListeners();
+    }
+
+    public float[] getMagnetometer() {
+        return magnetometerReading;
+    }
+
+    public float[] getAccelerometer() {
+        return accelerometerReading;
     }
 
     /**
@@ -171,64 +179,6 @@ public class OrientationSensorListener implements SensorEventListener {
         Vector m = Vector.fromFloatArray(magnetometerReading).normalize();
         Vector omega = Vector.fromFloatArray(gyroscopeReading);
 
-        // Get updated Gyro delta rotation from gyroscope readings
-        Quaternion deltaRotation = Rotation.getRotationFromGyroFSCF(omega, dt);
-        Quaternion prediction = estimate.times(deltaRotation);
-        RotationMatrix matrix = prediction.toRotationMatrix();
-
-        // prediction of a := Vector(0.0, 0.0, 1.0).rotateBy(prediction.inverse()) --> normalized
-        Vector aPrediction = new Vector(
-                matrix.m31,
-                matrix.m32,
-                matrix.m33);
-
-        // reference direction of magnetic field in earth frame after distortion compensation
-        Vector b = flux(aPrediction, m);
-
-        // prediction of m := Vector(0.0, b.y, b.z).rotateBy(prediction.inverse()) --> normalized
-        Vector mPrediction = new Vector(
-                matrix.m21 * b.y + matrix.m31 * b.z,
-                matrix.m22 * b.y + matrix.m32 * b.z,
-                matrix.m23 * b.y + matrix.m33 * b.z);
-
-        double aAlpha = Math.acos(a.dot(aPrediction));
-        Vector aCorrectionRaw = a.cross(aPrediction);
-        double aNorm = aCorrectionRaw.norm();
-        Vector aCorrection = (aNorm > EPS) ? aCorrectionRaw.div(aNorm) : Vector.defaultValue();
-
-        double mAlpha = Math.acos(m.dot(mPrediction));
-        Vector mCorrectionRaw = m.cross(mPrediction);
-        double mNorm = mCorrectionRaw.norm();
-        Vector mCorrection = (mNorm > EPS) ? mCorrectionRaw.div(mNorm) : Vector.defaultValue();
-
-        double aBeta = 0.5 * Math.min(aAlpha * LAMBDA1, LAMBDA2);
-        double mBeta = 0.5 * Math.min(mAlpha * LAMBDA1, LAMBDA2);
-
-        Vector fCorrection = new Vector(
-                aCorrection.x * aBeta + mCorrection.x * mBeta,
-                aCorrection.y * aBeta + mCorrection.y * mBeta,
-                aCorrection.z * aBeta + mCorrection.z * mBeta);
-
-        double fNorm = fCorrection.norm();
-        if (fNorm > EPS) {
-            Quaternion qCorrection = new Quaternion(fCorrection.x, fCorrection.y, fCorrection.z, 1.0);
-            estimate = prediction.times(qCorrection).normalize();
-        }
-        else {
-            estimate = prediction;
-        }
-    }
-
-    private static final double EPS = 0.0000001;
-    private static final double LAMBDA1 = 0.01;
-    private static final double LAMBDA2 = 0.1;
-
-    /**
-     * Returns the magnetic field in earth frame after distortion correction
-     */
-    private static Vector flux(Vector a, Vector m) {
-        double bz = (a.x * m.x + a.y * m.y + a.z * m.z) / (a.norm() * m.norm());
-        double by = Math.sqrt(1 - bz * bz);
-        return new Vector(0.0, by, bz);
+        estimate = FastAHRSFilter.update(a, m, omega, dt, estimate);
     }
 }
