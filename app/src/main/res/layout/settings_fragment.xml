@@ -12,13 +12,6 @@
         android:keepScreenOn="true"
         tools:context=".MainFragment">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/horizontal_guideline1"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.13" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -67,8 +60,8 @@
             android:id="@+id/show_magnetometer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/horizontal_guideline1"
-            android:layout_margin="@dimen/narrow_margin"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:layout_margin="@dimen/fat_margin"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/normal_text_size"
             android:text="@string/label_show_magnetometer" />
@@ -87,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/show_magnetometer"
-            android:layout_margin="@dimen/narrow_margin"
+            android:layout_margin="@dimen/fat_margin"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/normal_text_size"
             android:text="@string/label_show_accelerometer" />
@@ -106,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/show_accelerometer"
-            android:layout_margin="@dimen/narrow_margin"
+            android:layout_margin="@dimen/fat_margin"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/normal_text_size"
             android:text="@string/label_apply_low_pass_filter" />
@@ -124,7 +117,7 @@
             android:id="@+id/lambda1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/narrow_margin"
+            android:layout_margin="@dimen/fat_margin"
             app:layout_constraintTop_toBottomOf="@id/apply_low_pass_filter"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/normal_text_size"
@@ -147,7 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/lambda1"
-            android:layout_margin="@dimen/narrow_margin"
+            android:layout_margin="@dimen/fat_margin"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/normal_text_size"
             android:text="@string/label_lambda2" />

@@ -3,14 +3,11 @@
     <color name="colorPrimaryText">#dbdbdb</color>
     <color name="colorQuestion">#707070</color>
     <color name="colorHintsText">#dbdbdb</color>
-    <color name="colorHintsBackground">#230000</color>
+    <color name="colorHintsBackground">#130000</color>
     <color name="colorControl">#690000</color>
     <color name="colorControlBackground">#707070</color>
     <color name="colorActiveControl">#962e29</color>
     <color name="colorBackground">#000000</color>
-    <color name="colorRing">#711000</color>
-    <color name="colorArrowBright">#962e29</color>
-    <color name="colorArrowDark">#690000</color>
     <color name="pink">#BC47AB</color>
 </resources>
 
