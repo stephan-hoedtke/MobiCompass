@@ -1,5 +1,9 @@
 package com.stho.mobicompass;
 
+import android.util.Log;
+
+import java.util.Date;
+
 public class FastAHRSFilter {
 
     public static Quaternion update(Vector a, Vector m, Vector omega, double dt, Quaternion estimate) {
@@ -43,6 +47,12 @@ public class FastAHRSFilter {
 
         // Calculate fused correction and the new estimate
         Vector fCorrection = getFusedCorrectionFSCF(aCorrection, aBeta, mCorrection, mBeta);
+        Log.d("FSCF",Formatter.toString(new Date()) +
+                        ", a=" + Formatter.toString(aAlpha) +
+                        ", m=" + Formatter.toString(mAlpha) +
+                        ", correction=" + fCorrection.toString()
+                );
+
         double fNorm = fCorrection.norm();
         if (fNorm > EPS) {
             // new estimate := prediction rotate by fused correction from acceleration and magnetometer
@@ -95,8 +105,8 @@ public class FastAHRSFilter {
                 a.z * fa + m.z * fm);
     }
 
-    private static final double EPS = 0.0000001;
+    private static final double EPS = 1E-9;
 
-    static final double LAMBDA1 = 0.5; // full change in 2.0 seconds
+    static final double LAMBDA1 = 5.0; // full change in 0.2 seconds
     static final double LAMBDA2 = 1.0;
 }

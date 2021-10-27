@@ -1,6 +1,8 @@
 package com.stho.mobicompass;
 
 
+import androidx.annotation.NonNull;
+
 /**
  * https://mathworld.wolfram.com/Quaternion.html
  * https://www.ashwinnarayan.com/post/how-to-integrate-quaternions/
@@ -82,6 +84,12 @@ class Quaternion {
 
     public Quaternion normalize() {
         return this.div(norm());
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return "(x=" + Formatter.toString(x) + ", y=" + Formatter.toString(y) + ", z=" + Formatter.toString(z) + ", s=" + Formatter.toString(s) + ")";
     }
 
     /**

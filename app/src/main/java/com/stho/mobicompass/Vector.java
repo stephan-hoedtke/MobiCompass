@@ -1,6 +1,8 @@
 package com.stho.mobicompass;
 
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by shoedtke on 23.12.2015.
  */
@@ -48,6 +50,12 @@ public class Vector {
                 x / f,
                 y / f,
                 z / f);
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return "(x=" + Formatter.toString(x) + ", y=" + Formatter.toString(y) + ", z=" + Formatter.toString(z) + ")";
     }
 
     public static Vector fromFloatArray(float[] array) {
