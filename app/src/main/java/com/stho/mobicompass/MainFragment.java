@@ -131,20 +131,48 @@ public class MainFragment extends Fragment {
     }
 
     private void enableListener() {
+        handler.removeCallbacksAndMessages(null);
         handler.postDelayed(new Runnable() {
+
+            float[] accelerometer = null;
+            float[] magnetometer = null;
+            final Settings settings = viewModel.getSettings();
+
             @Override
             public void run() {
-                if (viewModel.getSettings().showAccelerometer) {
-                    float[] accelerometer = sensorListener.getAccelerometer();
+                if (settings.showAccelerometer) {
+                    float[] values = sensorListener.getAccelerometer();
+                    // Acceleration along x, y, z axis, sin(alpha) = x / 9.81 and sin(beta) = y / 9.81
+                    if (settings.applyLowPassFilter && accelerometer != null) {
+                        accelerometer[0] = 0.1f * values[0] + 0.9f * accelerometer[0];
+                        accelerometer[1] = 0.1f * values[1] + 0.9f * accelerometer[1];
+                        accelerometer[2] = 0.1f * values[2] + 0.9f * accelerometer[2];
+                    } else {
+                        accelerometer = new float[3];
+                        accelerometer[0] = values[0];
+                        accelerometer[1] = values[1];
+                        accelerometer[2] = values[2];
+                    }
                     if (Math.abs(accelerometer[2]) > 0.001) {
-                        double alpha = Degree.arcTan2(accelerometer[0], accelerometer[2]);
-                        double beta = Degree.arcTan2(accelerometer[1], accelerometer[2]);
+                        double alpha = Degree.arcSin(accelerometer[0] / 9.81);
+                        double beta = -Degree.arcSin(accelerometer[1] / 9.81);
                         binding.accelerometer.setTranslationX(10f * (float)alpha);
                         binding.accelerometer.setTranslationY(10f * (float)beta);
                     }
                 }
                 if (viewModel.getSettings().showMagnetometer) {
-                    float[] magnetometer = sensorListener.getMagnetometer();
+                    // Magnetic field strength along x, y, z axis --> tan(alpha) = x / y
+                    float[] values = sensorListener.getMagnetometer();
+                    if (settings.applyLowPassFilter && magnetometer != null) {
+                        magnetometer[0] = 0.1f * values[0] + 0.9f * magnetometer[0];
+                        magnetometer[1] = 0.1f * values[1] + 0.9f * magnetometer[1];
+                        magnetometer[2] = 0.1f * values[2] + 0.9f * magnetometer[2];
+                    } else {
+                        magnetometer = new float[3];
+                        magnetometer[0] = values[0];
+                        magnetometer[1] = values[1];
+                        magnetometer[2] = values[2];
+                    }
                     if (Math.abs(magnetometer[0]) > 0.001 || Math.abs(magnetometer[1]) > 0.001) {
                         double alpha = Degree.arcTan2(magnetometer[0], magnetometer[1]);
                         binding.magnetometer.setRotation((float) alpha);

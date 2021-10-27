@@ -63,14 +63,21 @@ public class MainViewModel extends AndroidViewModel {
     void setShowMagnetometer(boolean value) {
         Settings settings = getSettings();
         if (settings.showMagnetometer != value) {
-            settingsLiveData.postValue(new Settings(value, settings.showAccelerometer));
+            settingsLiveData.postValue(new Settings(value, settings.showAccelerometer, settings.applyLowPassFilter));
         }
     }
 
     void setShowAccelerometer(boolean value) {
         Settings settings = getSettings();
         if (settings.showAccelerometer != value) {
-            settingsLiveData.postValue(new Settings(settings.showMagnetometer, value));
+            settingsLiveData.postValue(new Settings(settings.showMagnetometer, value, settings.applyLowPassFilter));
+        }
+    }
+
+    void setApplyLowPassFilter(boolean value) {
+        Settings settings = getSettings();
+        if (settings.showAccelerometer != value) {
+            settingsLiveData.postValue(new Settings(settings.showMagnetometer, settings.showAccelerometer, value));
         }
     }
 
