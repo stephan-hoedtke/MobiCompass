@@ -11,7 +11,6 @@
     <string name="label_show_accelerometer">Show Accelerometer</string>
     <string name="label_apply_low_pass_filter">Apply Low Pass Filter</string>
     <string name="label_show_pdf">Display PDF</string>
-    <string name="label_settings_header">Sensor Fusion Settings</string>
     <string name="label_dismiss">x</string>
     <string name="label_navigate_home">Home</string>
     <string name="label_lambda1">λ1</string>

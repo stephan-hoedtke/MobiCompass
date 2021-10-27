@@ -12,7 +12,6 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class MainViewModel extends AndroidViewModel {
 

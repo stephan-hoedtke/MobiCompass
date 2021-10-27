@@ -1,7 +1,5 @@
 package com.stho.mobicompass;
 
-import java.util.Set;
-
 final class Settings {
     final boolean showMagnetometer;
     final boolean showAccelerometer;

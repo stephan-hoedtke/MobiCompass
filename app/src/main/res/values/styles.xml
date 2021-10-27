@@ -45,17 +45,6 @@
         <item name="materialThemeOverlay">@style/ThemeOverlay.MyTheme.RadioButton</item>
     </style>
 
-    <style name="MyTheme.NormalText" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">?attr/myMainTextColor</item>
-        <item name="android:textSize">@dimen/normal_text_size</item>
-    </style>
-
-    <style name="MyTheme.HeaderText" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">?attr/myMainTextColor</item>
-        <item name="android:textSize">@dimen/header_text_size</item>
-    </style>
-
-
     <style name="ThemeOverlay.MyTheme.RadioButton" parent="">
         <item name="colorPrimary">@color/pink</item>
         <item name="colorSurface">?attr/myControlColor</item><!-- unchecked -->

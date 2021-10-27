@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#000000</color>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
     <color name="colorPrimaryText">#dbdbdb</color>
-    <color name="colorPrimaryTextAccent">#e0cbcb</color>
     <color name="colorQuestion">#707070</color>
     <color name="colorHintsText">#dbdbdb</color>
     <color name="colorHintsBackground">#230000</color>
@@ -15,31 +11,6 @@
     <color name="colorRing">#711000</color>
     <color name="colorArrowBright">#962e29</color>
     <color name="colorArrowDark">#690000</color>
-
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="gray_dark">#888888</color>
-    <color name="gray">#AAAAAA</color>
-    <color name="gray_light">#CCCCCC</color>
-    <color name="green_light">#00CC00</color>
-    <color name="green">#009900</color>
-    <color name="green_dark">#007700</color>
-    <color name="blue_light">#0000CC</color>
-    <color name="blue">#000099</color>
-    <color name="blue_dark">#000077</color>
-    <color name="red_light">#CC0000</color>
-    <color name="red">#990000</color>
-    <color name="red_dark">#770000</color>
-    <color name="lime_light">#CCCC00</color>
-    <color name="lime">#999900</color>
-    <color name="lime_dark">#777700</color>
-    <color name="orange_light">#F48406</color>
-    <color name="orange">#E47406</color>
-    <color name="orange_dark">#D46406</color>
-    <color name="yellow_light">#FFF9E2</color>
-    <color name="yellow">#FFE762</color>
-    <color name="yellow_dark">#FFD304</color>
     <color name="pink">#BC47AB</color>
-
 </resources>
 

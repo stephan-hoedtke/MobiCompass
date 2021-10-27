@@ -22,7 +22,7 @@ public class MainFragment extends Fragment {
     private OrientationSensorListener sensorListener;
     private ButtonAnimation buttonAnimation;
     private HintsAnimation hintsAnimation;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
