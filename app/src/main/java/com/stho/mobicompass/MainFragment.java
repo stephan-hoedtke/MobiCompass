@@ -144,9 +144,9 @@ public class MainFragment extends Fragment {
                     float[] values = sensorListener.getAccelerometer();
                     // Acceleration along x, y, z axis, sin(alpha) = x / 9.81 and sin(beta) = y / 9.81
                     if (settings.applyLowPassFilter && accelerometer != null) {
-                        accelerometer[0] = 0.1f * values[0] + 0.9f * accelerometer[0];
-                        accelerometer[1] = 0.1f * values[1] + 0.9f * accelerometer[1];
-                        accelerometer[2] = 0.1f * values[2] + 0.9f * accelerometer[2];
+                        accelerometer[0] += 0.2f * (values[0] - accelerometer[0]);
+                        accelerometer[1] += 0.2f * (values[1] - accelerometer[1]);
+                        accelerometer[2] += 0.2f * (values[2] - accelerometer[2]);
                     } else {
                         accelerometer = new float[3];
                         accelerometer[0] = values[0];
@@ -164,9 +164,9 @@ public class MainFragment extends Fragment {
                     // Magnetic field strength along x, y, z axis --> tan(alpha) = x / y
                     float[] values = sensorListener.getMagnetometer();
                     if (settings.applyLowPassFilter && magnetometer != null) {
-                        magnetometer[0] = 0.1f * values[0] + 0.9f * magnetometer[0];
-                        magnetometer[1] = 0.1f * values[1] + 0.9f * magnetometer[1];
-                        magnetometer[2] = 0.1f * values[2] + 0.9f * magnetometer[2];
+                        magnetometer[0] += 0.2f * (values[0] - magnetometer[0]);
+                        magnetometer[1] += 0.2f * (values[1] - magnetometer[1]);
+                        magnetometer[2] += 0.2f * (values[2] - magnetometer[2]);
                     } else {
                         magnetometer = new float[3];
                         magnetometer[0] = values[0];

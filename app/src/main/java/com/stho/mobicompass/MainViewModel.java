@@ -75,7 +75,7 @@ public class MainViewModel extends AndroidViewModel {
 
     void setApplyLowPassFilter(boolean value) {
         Settings settings = getSettings();
-        if (settings.showAccelerometer != value) {
+        if (settings.applyLowPassFilter != value) {
             settingsLiveData.postValue(new Settings(settings.showMagnetometer, settings.showAccelerometer, value));
         }
     }

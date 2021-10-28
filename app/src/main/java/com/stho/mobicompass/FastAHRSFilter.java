@@ -6,6 +6,9 @@ import java.util.Date;
 
 public class FastAHRSFilter {
 
+    /**
+     * Update the current estimation by a correction derived from the normalized sensor accelerometer and magnetometer readings a and m
+     */
     public static Quaternion update(Vector a, Vector m, Vector omega, double dt, Quaternion estimate) {
 
         // Get updated Gyro delta rotation from gyroscope readings
@@ -34,16 +37,14 @@ public class FastAHRSFilter {
         // - the magnitude as "angle between prediction and measurement" := arcCos(measurement dot prediction)
         // - the direction as unit vector := (measurement x prediction).normalize()
         double aAlpha = angleBetweenUnitVectors(a, aPrediction);
-        Vector aCorrection = a.cross(aPrediction).normalize(EPS);
+        Vector aCorrection = a.cross(aPrediction).normalize();
 
         double mAlpha = angleBetweenUnitVectors(m, mPrediction);
         Vector mCorrection = m.cross(mPrediction).normalize(EPS);
 
         // Limit the magnitude of correction with time factor
-        double l1 = LAMBDA1 * Math.min(dt, 1.0);
-        double l2 = LAMBDA2 * Math.min(dt, 1.0);
-        double aBeta = Math.min(aAlpha * l1, l2);
-        double mBeta = Math.min(mAlpha * l1, l2);
+        double aBeta = Math.min(dt, 1.0) * f(aAlpha);
+        double mBeta = Math.min(dt, 1.0) * f(mAlpha);
 
         // Calculate fused correction and the new estimate
         Vector fCorrection = getFusedCorrectionFSCF(aCorrection, aBeta, mCorrection, mBeta);
@@ -85,6 +86,25 @@ public class FastAHRSFilter {
     }
 
     /**
+     * Default:
+     *      f(x) := lambda * x
+     *              with lambda = 0.5 for small x
+     * Non-linear:
+     *      f(x) := lambda * x + tau * x^2
+     *              with f(x) = lambda * x for small x
+     *               and f(x) = 10 * lambda * x for x about 20°
+     *
+     *              20° --> x = 2 PI / 360° * 20° = PI/9
+     *              f'(0) = lambda
+     *              f(0) = 0
+     *              f(PI/9) = 10 * lambda * PI/9 = lambda * PI/9 + tau * (PI/9)^2
+     *              tau = lambda * 81 / PI
+     */
+    private static double f(double alpha) {
+        return Math.min(alpha * (LAMBDA1 + alpha * TAU1), LAMBDA2);
+    }
+
+    /**
      * Returns the magnetic field in earth frame after distortion correction.
      *
      * Note:
@@ -107,6 +127,8 @@ public class FastAHRSFilter {
 
     private static final double EPS = 1E-9;
 
-    static final double LAMBDA1 = 5.0; // full change in 0.2 seconds
+    static final double LAMBDA1 = 1.0;
     static final double LAMBDA2 = 1.0;
+
+    static final double TAU1 = 81 / Math.PI * LAMBDA1;
 }
