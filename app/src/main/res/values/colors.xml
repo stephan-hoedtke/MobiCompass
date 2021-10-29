@@ -3,7 +3,7 @@
     <color name="colorPrimaryText">#dbdbdb</color>
     <color name="colorQuestion">#707070</color>
     <color name="colorHintsText">#dbdbdb</color>
-    <color name="colorHintsBackground">#130000</color>
+    <color name="colorHintsBackground">#1E0000</color><!-- #130000 -->
     <color name="colorControl">#690000</color>
     <color name="colorControlBackground">#707070</color>
     <color name="colorActiveControl">#962e29</color>
