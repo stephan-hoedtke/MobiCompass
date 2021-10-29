@@ -1,6 +1,7 @@
 package com.stho.mobicompass;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -27,7 +28,7 @@ public class MainViewModel extends AndroidViewModel {
         ringAngleLiveData.setValue(0f);
         manualModeLiveData.setValue(false);
         lookAtPhoneFromAboveLiveData.setValue(true);
-        settingsLiveData.setValue(Settings.defaultValue());
+        settingsLiveData.setValue(readSettings(application));
         northPointerAngleMediatorLiveData.addSource(orientationFilter.getOrientationLD(),
                 orientation -> {
                     float northPointerAngle = getNorthPointerPositionFromOrientation(orientation);
@@ -38,6 +39,16 @@ public class MainViewModel extends AndroidViewModel {
                         setRingAngle(northPointerAngle);
                     }
                 });
+    }
+
+    static Settings readSettings(@NonNull Application application) {
+        SettingsPersistenceManager manager = new SettingsPersistenceManager(application.getApplicationContext());
+        return manager.read();
+    }
+
+    void saveSettings() {
+        SettingsPersistenceManager manager = new SettingsPersistenceManager(getApplication().getApplicationContext());
+        manager.save(getSettings());
     }
 
     static MainViewModel build(@NonNull FragmentActivity activity) {
@@ -78,6 +89,10 @@ public class MainViewModel extends AndroidViewModel {
         if (settings.applyLowPassFilter != value) {
             settingsLiveData.postValue(new Settings(settings.showMagnetometer, settings.showAccelerometer, value));
         }
+    }
+
+    void resetDefaultSettings() {
+        settingsLiveData.postValue(Settings.defaultValue());
     }
 
     /**

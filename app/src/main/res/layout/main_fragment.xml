@@ -130,7 +130,7 @@
             android:alpha="0.3"
             android:background="@color/colorHintsBackground">
 
-            <androidx.legacy.widget.Space
+            <Space
                 android:id="@+id/space"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/narrow_margin"

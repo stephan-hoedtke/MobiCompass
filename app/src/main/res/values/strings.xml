@@ -38,5 +38,7 @@
         However, while the gyroscope offers the best reactivity and accuracy, it suffers badly from a systematic drift. \n\n
         Therefore, the orientation estimation is constantly corrected using the data obtained
         from the accelerometer and the magnetometer. \n\n
+        The mathematical details are explained in the PDF below.
     </string>
+    <string name="label_reset_default_settings">Reset Default Settings</string>
 </resources>

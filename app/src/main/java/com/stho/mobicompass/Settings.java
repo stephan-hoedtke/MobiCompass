@@ -11,6 +11,10 @@ final class Settings {
         this.applyLowPassFilter = applyLowPassFilter;
     }
 
+    boolean isModified() {
+        return showMagnetometer || showAccelerometer || !applyLowPassFilter;
+    }
+
     static Settings defaultValue() {
         return new Settings(false, false, true);
     }

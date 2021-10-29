@@ -56,135 +56,166 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/show_magnetometer"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            android:layout_margin="@dimen/fat_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/label_show_magnetometer" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_show_magnetometer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/narrow_margin"
-            app:layout_constraintTop_toTopOf="@id/show_magnetometer"
-            app:layout_constraintBottom_toBottomOf="@id/show_magnetometer"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/show_accelerometer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/show_magnetometer"
-            android:layout_margin="@dimen/fat_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/label_show_accelerometer" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_show_accelerometer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/narrow_margin"
-            app:layout_constraintTop_toTopOf="@id/show_accelerometer"
-            app:layout_constraintBottom_toBottomOf="@id/show_accelerometer"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/apply_low_pass_filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/show_accelerometer"
-            android:layout_margin="@dimen/fat_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/label_apply_low_pass_filter" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_apply_low_pass_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/narrow_margin"
-            app:layout_constraintTop_toTopOf="@id/apply_low_pass_filter"
-            app:layout_constraintBottom_toBottomOf="@id/apply_low_pass_filter"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/lambda1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fat_margin"
-            app:layout_constraintTop_toBottomOf="@id/apply_low_pass_filter"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/label_lambda1" />
-
-        <TextView
-            android:id="@+id/value_lambda1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/fat_margin"
-            app:layout_constraintTop_toTopOf="@id/lambda1"
-            app:layout_constraintBottom_toBottomOf="@id/lambda1"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/default_lambda" />
-
-        <TextView
-            android:id="@+id/lambda2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/lambda1"
-            android:layout_margin="@dimen/fat_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/label_lambda2" />
-
-        <TextView
-            android:id="@+id/value_lambda2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/fat_margin"
-            app:layout_constraintTop_toTopOf="@id/lambda2"
-            app:layout_constraintBottom_toBottomOf="@id/lambda2"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/normal_text_size"
-            android:text="@string/default_lambda" />
-
-        <androidx.legacy.widget.Space
-            android:id="@+id/space"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/normal_text_size"
-            app:layout_constraintTop_toBottomOf="@id/lambda2" />
-
-        <TextView
-            android:id="@+id/label_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/narrow_margin"
-            app:layout_constraintTop_toBottomOf="@id/space"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/tiny_text_size"
-            android:text="@string/text_settings_details" />
-
-        <ImageView
-            android:id="@+id/button_pdf"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_margin="@dimen/narrow_margin"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/pdf"
-            android:contentDescription="@string/label_show_pdf" />
+            android:fillViewport="true" >
+
+           <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorHintsBackground">
+
+                <TextView
+                    android:id="@+id/show_magnetometer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_margin="@dimen/fat_margin"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/label_show_magnetometer" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_show_magnetometer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/narrow_margin"
+                    app:layout_constraintTop_toTopOf="@id/show_magnetometer"
+                    app:layout_constraintBottom_toBottomOf="@id/show_magnetometer"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/show_accelerometer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/show_magnetometer"
+                    android:layout_margin="@dimen/fat_margin"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/label_show_accelerometer" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_show_accelerometer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/narrow_margin"
+                    app:layout_constraintTop_toTopOf="@id/show_accelerometer"
+                    app:layout_constraintBottom_toBottomOf="@id/show_accelerometer"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/apply_low_pass_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/show_accelerometer"
+                    android:layout_margin="@dimen/fat_margin"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/label_apply_low_pass_filter" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_apply_low_pass_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/narrow_margin"
+                    app:layout_constraintTop_toTopOf="@id/apply_low_pass_filter"
+                    app:layout_constraintBottom_toBottomOf="@id/apply_low_pass_filter"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <TextView
+                    android:id="@+id/lambda1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fat_margin"
+                    app:layout_constraintTop_toBottomOf="@id/apply_low_pass_filter"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/label_lambda1" />
+
+                <TextView
+                    android:id="@+id/value_lambda1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/fat_margin"
+                    app:layout_constraintTop_toTopOf="@id/lambda1"
+                    app:layout_constraintBottom_toBottomOf="@id/lambda1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/default_lambda" />
+
+                <TextView
+                    android:id="@+id/lambda2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/lambda1"
+                    android:layout_margin="@dimen/fat_margin"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/label_lambda2" />
+
+                <TextView
+                    android:id="@+id/value_lambda2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/fat_margin"
+                    app:layout_constraintTop_toTopOf="@id/lambda2"
+                    app:layout_constraintBottom_toBottomOf="@id/lambda2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/default_lambda" />
+
+                <Space
+                    android:id="@+id/space"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/normal_text_size"
+                    app:layout_constraintTop_toBottomOf="@id/lambda2" />
+
+                <TextView
+                    android:id="@+id/label_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/narrow_margin"
+                    app:layout_constraintTop_toBottomOf="@id/space"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/tiny_text_size"
+                    android:text="@string/text_settings_details" />
+
+                <ImageView
+                    android:id="@+id/button_pdf"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:layout_margin="@dimen/narrow_margin"
+                    app:layout_constraintTop_toBottomOf="@id/label_details"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/pdf"
+                    android:contentDescription="@string/label_show_pdf" />
+
+               <com.google.android.material.button.MaterialButton
+                   android:id="@+id/button_default"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="@dimen/narrow_margin"
+                   app:layout_constraintTop_toBottomOf="@id/button_pdf"
+                   android:backgroundTint="@color/colorControlBackground"
+                   android:text="@string/label_reset_default_settings" />
+
+               <Space
+                   android:layout_width="match_parent"
+                   android:layout_height="@dimen/target_size"
+                   app:layout_constraintTop_toBottomOf="@id/button_default"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -34,6 +34,7 @@ public class SettingsFragment extends Fragment {
         binding.switchApplyLowPassFilter.setOnCheckedChangeListener(((compoundButton, value) -> viewModel.setApplyLowPassFilter(value)));
         binding.buttonBack.setOnClickListener(view -> onHome());
         binding.buttonPdf.setOnClickListener(view -> onPdf());
+        binding.buttonDefault.setOnClickListener(view -> viewModel.resetDefaultSettings());
         binding.valueLambda1.setText(getString(R.string.value, FastAHRSFilter.LAMBDA1));
         binding.valueLambda2.setText(getString(R.string.value, FastAHRSFilter.LAMBDA2));
         return binding.getRoot();
@@ -50,6 +51,7 @@ public class SettingsFragment extends Fragment {
         binding.switchShowMagnetometer.setChecked(settings.showMagnetometer);
         binding.switchApplyLowPassFilter.setChecked(settings.applyLowPassFilter);
         binding.switchApplyLowPassFilter.setEnabled(settings.showAccelerometer || settings.showMagnetometer);
+        binding.buttonDefault.setEnabled(settings.isModified());
     }
 
     private void onHome() {

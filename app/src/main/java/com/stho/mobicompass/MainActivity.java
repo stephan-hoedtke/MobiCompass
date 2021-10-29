@@ -14,7 +14,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         viewModel = MainViewModel.build(this);
-   }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        viewModel.saveSettings();
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
